@@ -49,7 +49,7 @@ public class Factory : MonoBehaviour {
     void Init()
     {
     	// 载入GameController
-        GameController = GameObject.Find("GameController");
+        GameController = GameObject.Find("Factory Controller");
 
         // 数据定义
         // Eye = new string[]{"Block", "Round", "Triangle", "Triangle-Right"};
@@ -140,7 +140,8 @@ public class Factory : MonoBehaviour {
         // 添加刚体和碰撞器
         newBox.AddComponent<Rigidbody2D>();
         newBox.AddComponent<BoxCollider2D>();
-        newBox.transform.position = new Vector3(0,0,-5);
+        newBox.transform.position = new Vector3(0,0,0);
+        newBox.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
         // 创建面部
         GameObject Face = new GameObject();
@@ -154,7 +155,7 @@ public class Factory : MonoBehaviour {
         Eye.AddComponent<SpriteRenderer>();
         Eye.GetComponent<SpriteRenderer>().sprite = boxEye[Random.Range(0, dEye.Length)];
         // 显示优先级
-        Eye.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        Eye.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
         // 创建眼球
         GameObject EyeBall = new GameObject();
@@ -163,7 +164,7 @@ public class Factory : MonoBehaviour {
         EyeBall.AddComponent<SpriteRenderer>();
         EyeBall.GetComponent<SpriteRenderer>().sprite = boxEyeBall[Random.Range(0, dEyeBall.Length)];
         // 显示优先级
-        EyeBall.GetComponent<SpriteRenderer>().sortingOrder = 2;
+        EyeBall.GetComponent<SpriteRenderer>().sortingOrder = 3;
 
         // 创建鼻子
         GameObject Nose = new GameObject();
@@ -172,7 +173,7 @@ public class Factory : MonoBehaviour {
         Nose.AddComponent<SpriteRenderer>();
         Nose.GetComponent<SpriteRenderer>().sprite = boxNose[Random.Range(0, dNose.Length)];
         // 显示优先级
-        Nose.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        Nose.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
         // 创建鼻子
         GameObject Mouth = new GameObject();
@@ -181,10 +182,8 @@ public class Factory : MonoBehaviour {
         Mouth.AddComponent<SpriteRenderer>();
         int t = Random.Range(0, dMouth.Length);
         Mouth.GetComponent<SpriteRenderer>().sprite = boxMouth[t];
-        Debug.Log(t);
-        Debug.Log(dMouth[t]);
         // 显示优先级
-        Mouth.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        Mouth.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
         // 缩放物体
         newBox.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
