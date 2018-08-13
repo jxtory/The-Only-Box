@@ -266,8 +266,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 463495569}
-        m_MethodName: CreBox
+      - m_Target: {fileID: 653170655}
+        m_MethodName: CreateBox
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -468,12 +468,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 653170653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b8f1db6e2698a448699ff0223670c6, type: 3}
+  m_Script: {fileID: 11500000, guid: a787446e66edde44797acb3718332fd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GC: {fileID: 0}
-  Me: {fileID: 0}
-  MyName: 
+  GameController: {fileID: 0}
+  BorderControl: 0
 --- !u!1 &790131251
 GameObject:
   m_ObjectHideFlags: 0

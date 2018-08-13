@@ -39,8 +39,8 @@ public class Factory : MonoBehaviour {
     // 边界控制
 	void BordersControl()
 	{
-        GameObject.Find("Borders/Top").transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
-        GameObject.Find("Borders/Bottom").transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+        GameObject.Find("Borders/Top").transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+        GameObject.Find("Borders/Bottom").transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
         GameObject.Find("Borders/Left").transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
         GameObject.Find("Borders/Right").transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
 	}
