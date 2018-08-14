@@ -66,12 +66,19 @@ public class MainControllers : MonoBehaviour {
     	MiniBox box = newBox.GetComponent<MiniBox>();
     	// 绑定盒子与MiniBox(捆绑)
     	box.SetBoxSelf(newBox);
-    	// 给盒子指定从属的控制器(学习)
+    	// 给盒子指定从属的控制器(寄宿)
     	box.GC = this.GetComponent<MainControllers>();
     	// 给盒子命名(名字)
     	box.MyName = "Box";
     	// 设置缩放比例(体形)
+    	boxSize = new Vector3(0.7f, 0.7f, 0.7f);
     	box.SetScaleSize(boxSize);
+    	// 设置盒子面部
+    	int[] face = new int[3];
+    	face[0] = Random.Range(0, dEye.Length);
+    	face[1] = Random.Range(0, dEyeBall.Length);
+    	face[2] = Random.Range(0, dNose.Length);
+    	box.SetBoxFace(face);
     	// 生成盒子(出生)
     	box.SetGameObject();
 
@@ -84,6 +91,24 @@ public class MainControllers : MonoBehaviour {
 	public Sprite GetBoxFrame()
 	{
 		return boxFrame;
+	}
+
+	// - 获取眼眶 -
+	public Sprite GetBoxEye(int eye)
+	{
+		return boxEye[eye];
+	}
+
+	// - 获取眼球 -
+	public Sprite GetBoxEyeBall(int eyeball)
+	{
+		return boxEyeBall[eyeball];
+	}
+	
+	// - 获取鼻子 -
+	public Sprite GetBoxNose(int nose)
+	{
+		return boxNose[nose];
 	}
 
 	// Use this for initialization

@@ -36,6 +36,89 @@ public class MiniBox : MonoBehaviour {
     // - 视线 -
     private GameObject him;
 
+    // - - - - - - - - - - 
+
+    // - 相关属性 -
+    public int Eye
+    {
+        get
+        {
+            return eye;
+        }
+
+        set
+        {
+            eye = value;
+        }
+    }
+    public int EyeBall
+    {
+        get
+        {
+            return eyeBall;
+        }
+        set
+        {
+            eyeBall = value;
+        }
+    }
+    public int Nose
+    {
+        get
+        {
+            return nose;
+        }
+        set
+        {
+            nose = value;
+        }
+    }
+    public int Mouth
+    {
+        get
+        {
+            return mouth;
+        }
+        set
+        {
+            mouth = Mouth;
+        }
+    }
+    public int Feature
+    {
+        get
+        {
+            return feature;
+        }
+        set
+        {
+            feature = value;
+        }
+    }
+
+    // - - - - - - - - - - -
+
+    // - 心理运动控制 -
+    public void Psychomotor()
+    {
+
+    }
+
+    // - 设置盒子面部 -
+    public void SetBoxFace(int[] face)
+    {
+        // 赋予面部部位
+        this.Eye = face[0];
+        this.EyeBall = face[1];
+        this.Nose = face[2];
+    }
+
+    // - 设置心情 -
+    public void SetMood(int mood)
+    {
+        this.mood = mood;
+    }
+
     // - 设置盒子 -
     public void SetBoxSelf(GameObject gameObject)
     {
@@ -66,6 +149,49 @@ public class MiniBox : MonoBehaviour {
         BoxSelf.GetComponent<SpriteRenderer>().sortingOrder = 1;        
         // 添加主体颜色
         BoxSelf.GetComponent<SpriteRenderer>().color = color;
+
+        // 创建面部
+        GameObject Face = new GameObject();
+        Face.name = "Face";
+        Face.transform.parent = BoxSelf.transform;
+
+        // 创建眼睛
+        GameObject Eye = new GameObject();
+        Eye.name = "Eye";
+        Eye.transform.parent = Face.transform;
+        Eye.AddComponent<SpriteRenderer>();
+        Eye.GetComponent<SpriteRenderer>().sprite = GC.GetBoxEye(eye);
+        // 显示优先级
+        Eye.GetComponent<SpriteRenderer>().sortingOrder = 2;
+
+        // 创建眼球
+        GameObject EyeBall = new GameObject();
+        EyeBall.name = "EyeBall";
+        EyeBall.transform.parent = Face.transform;
+        EyeBall.AddComponent<SpriteRenderer>();
+        EyeBall.GetComponent<SpriteRenderer>().sprite = GC.GetBoxEyeBall(eyeBall);
+        // 显示优先级
+        EyeBall.GetComponent<SpriteRenderer>().sortingOrder = 3;
+
+        // 创建鼻子
+        GameObject Nose = new GameObject();
+        Nose.name = "EyeNose";
+        Nose.transform.parent = Face.transform;
+        Nose.AddComponent<SpriteRenderer>();
+        Nose.GetComponent<SpriteRenderer>().sprite = GC.GetBoxNose(nose);
+        // 显示优先级
+        Nose.GetComponent<SpriteRenderer>().sortingOrder = 2;
+
+        // 创建嘴
+        GameObject Mouth = new GameObject();
+        Mouth.name = "EyeMouth";
+        Mouth.transform.parent = Face.transform;
+        Mouth.AddComponent<SpriteRenderer>();
+        // 显示优先级
+        Mouth.GetComponent<SpriteRenderer>().sortingOrder = 2;
+
+        // 缩放物体
+        BoxSelf.transform.localScale = scaleSize;
     }
 
 	// Use this for initialization
@@ -75,6 +201,6 @@ public class MiniBox : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		Psychomotor();
 	}
 }

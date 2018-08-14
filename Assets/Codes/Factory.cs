@@ -175,7 +175,7 @@ public class Factory : MonoBehaviour {
         // 显示优先级
         Nose.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
-        // 创建鼻子
+        // 创建嘴
         GameObject Mouth = new GameObject();
         Mouth.name = "EyeMouth";
         Mouth.transform.parent = Face.transform;
