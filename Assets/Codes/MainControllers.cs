@@ -35,6 +35,10 @@ public class MainControllers : MonoBehaviour {
 	private GameObject borderLeft;
 	private GameObject borderRight;
 
+	// 面部活跃模式 true 为 活跃 false 为死板 默认为活跃
+	[Header("面部活跃")]
+	public bool FaceMode = true;
+
 	// - 游戏贴图和数据 -
 	// * 贴图 *
 	// 盒子框
@@ -55,6 +59,31 @@ public class MainControllers : MonoBehaviour {
 	private Vector3 boxSize = new Vector3(1, 1, 1);
 
 	// - - - - - - - - - - -
+
+	// - 边界控制 -
+	void BordersControl()
+	{
+		// 允许控制
+		if(BorderControl){
+			// 上控制
+			if(borderTopC){
+				GameObject.Find("Borders/Top").transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+			}
+			// 下控制
+			if(borderBottomC){
+				GameObject.Find("Borders/Bottom").transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
+			}
+			// 左控制
+			if(borderLeftC){
+				GameObject.Find("Borders/Left").transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
+			}
+			// 右控制
+			if(borderRightC){
+				GameObject.Find("Borders/Right").transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
+			}
+		}
+	}
+
 	// - 创建盒子 -
 	public void CreateBox()
 	{
@@ -74,10 +103,11 @@ public class MainControllers : MonoBehaviour {
     	boxSize = new Vector3(0.7f, 0.7f, 0.7f);
     	box.SetScaleSize(boxSize);
     	// 设置盒子面部
-    	int[] face = new int[3];
+    	int[] face = new int[4];
     	face[0] = Random.Range(0, dEye.Length);
     	face[1] = Random.Range(0, dEyeBall.Length);
     	face[2] = Random.Range(0, dNose.Length);
+    	face[3] = Random.Range(0, dMouth.Length);
     	box.SetBoxFace(face);
     	// 生成盒子(出生)
     	box.SetGameObject();
@@ -85,6 +115,12 @@ public class MainControllers : MonoBehaviour {
 	    // 从出生点出生
 	    newBox.transform.position = new Vector3();
 
+	}
+
+	// - 找寻GameObject -
+	GameObject FindIt(string him)
+	{
+		return GameObject.Find(him);
 	}
 
 	// - 获取盒子框 -
@@ -111,6 +147,26 @@ public class MainControllers : MonoBehaviour {
 		return boxNose[nose];
 	}
 
+	// - 获取嘴 -
+	public Sprite GetBoxMouth(int mouth)
+	{
+		return boxMouth[mouth];
+	}
+
+	// - 找寻嘴的地址 -
+	public int GetMouthNumber(string him)
+	{
+		int tMouth = -1;
+
+		for(int i = 0; i < dMouth.Length; i++){
+			if(dMouth[i] == him){
+				tMouth = i;
+				return tMouth;
+			}
+		}
+		return tMouth;
+	}
+
 	// Use this for initialization
 	void Start () {
 		// 初始化
@@ -123,36 +179,7 @@ public class MainControllers : MonoBehaviour {
 	void Update () {
 		// 边界控制
 		BordersControl();
-	}
 
-	// - 边界控制 -
-	void BordersControl()
-	{
-		// 允许控制
-		if(BorderControl){
-			// 上控制
-			if(borderTopC){
-				GameObject.Find("Borders/Top").transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
-			}
-			// 下控制
-			if(borderBottomC){
-				GameObject.Find("Borders/Bottom").transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
-			}
-			// 左控制
-			if(borderLeftC){
-				GameObject.Find("Borders/Left").transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
-			}
-			// 右控制
-			if(borderRightC){
-				GameObject.Find("Borders/Right").transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
-			}
-		}
-	}
-
-	// - 找寻GameObject -
-	GameObject FindIt(string him)
-	{
-		return GameObject.Find(him);
 	}
 
 	// - 初始化 -
