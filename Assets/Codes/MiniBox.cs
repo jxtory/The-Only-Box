@@ -11,13 +11,16 @@ public class MiniBox : MonoBehaviour {
     // 定位自己
     public GameObject BoxSelf;
     [Header("盒子属性")]
-    // 名字
     [Header("盒子名字")]
+    // 名字
     public string MyName;
+    private Vector3 mySpawnPoint;
     // 颜色	默认为白色
     private Color color = Color.white;
     // 大小	
     private Vector3 scaleSize = new Vector3(1.0f, 1.0f, 1.0f);
+    // 在岗
+    public bool working;
     // - 面部细节 -
     public bool BPsychomotor = true;
     // 眼眶
@@ -39,6 +42,7 @@ public class MiniBox : MonoBehaviour {
     // - - - - - - - - - - 
 
     // - 相关属性 -
+    // 设置眼眶
     public int Eye
     {
         get
@@ -51,6 +55,8 @@ public class MiniBox : MonoBehaviour {
             eye = value;
         }
     }
+
+    // 设置眼球
     public int EyeBall
     {
         get
@@ -62,6 +68,8 @@ public class MiniBox : MonoBehaviour {
             eyeBall = value;
         }
     }
+
+    // 设置鼻子
     public int Nose
     {
         get
@@ -73,6 +81,8 @@ public class MiniBox : MonoBehaviour {
             nose = value;
         }
     }
+
+    // 设置嘴
     public int Mouth
     {
         get
@@ -84,6 +94,8 @@ public class MiniBox : MonoBehaviour {
             mouth = value;
         }
     }
+
+    // 设置特征
     public int Feature
     {
         get
@@ -96,7 +108,50 @@ public class MiniBox : MonoBehaviour {
         }
     }
 
+    // 设置出生地
+    public Vector3 MySpawnPoint
+    {
+        set
+        {
+            mySpawnPoint = value;
+        }
+    }
+
     // - - - - - - - - - - -
+
+    // - 工作检测 -
+    void checkWorking()
+    {
+        // 工作范围
+        if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y > GC.BorderBottom.transform.position.y && BoxSelf.transform.position.x > GC.BorderLeft.transform.position.x && BoxSelf.transform.position.x < GC.BorderRight.transform.position.x)
+        {
+            working = true;
+        }
+
+        // 超出上边界
+        if (BoxSelf.transform.position.y > GC.BorderTop.transform.position.y){
+            working = false;
+        }
+
+        // 超出下边界
+        if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y < GC.BorderBottom.transform.position.y){
+            working = false;
+            BoxSelf.transform.position = mySpawnPoint;
+        }
+
+        // 超出左边界
+        if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y > GC.BorderBottom.transform.position.y && BoxSelf.transform.position.x < GC.BorderLeft.transform.position.x){
+            working = false;
+            BoxSelf.transform.position = mySpawnPoint;
+        }
+
+        // 超出右边界
+        if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y > GC.BorderBottom.transform.position.y && BoxSelf.transform.position.x > GC.BorderRight.transform.position.x){
+            working = false;
+            BoxSelf.transform.position = mySpawnPoint;
+        }
+
+    }
 
     // - 心理运动控制(嘴部贴图控制) -
     public void Psychomotor()
@@ -279,7 +334,10 @@ public class MiniBox : MonoBehaviour {
 	void Update () {
         // - 控制心情 -
         if(BPsychomotor){Psychomotor();}
-		
+
+        // - 查岗 -
+        checkWorking();
+
 	}
 
     /*

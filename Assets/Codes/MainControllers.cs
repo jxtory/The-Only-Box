@@ -1,169 +1,211 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MainControllers : MonoBehaviour {
 	/* - - - - - - - - - - 
-		æ¸¸æˆåç§°ï¼š 
-			è‹±ï¼šThe Only Box
-			ä¸­ï¼šæ‰¾åˆ°é‚£æ–¹å—
+		ÓÎÏ·Ãû³Æ£º 
+			Ó¢£ºThe Only Box
+			ÖĞ£ºÕÒµ½ÄÇ·½¿é
 
-		Codeè¯´æ˜ï¼šæ–¹å—ã€ç›’å­ã€ç«‹æ–¹ä½“ã€Box	ä»¥ä¸‹å‡ç®€ç§°ç›’å­
+		CodeËµÃ÷£º·½¿é¡¢ºĞ×Ó¡¢Á¢·½Ìå¡¢Box	ÒÔÏÂ¾ù¼ò³ÆºĞ×Ó
 
-		æ¸¸æˆæ¨¡å¼
-			1 è¶£å‘³æ¨¡å¼	2 è¶…å¼ºæ¨¡å¼
+		ÓÎÏ·Ä£Ê½
+			1 È¤Î¶Ä£Ê½	2 ³¬Ç¿Ä£Ê½
 
-		æ¸¸æˆå…ƒç´ 
-			æ¬¢ä¹çƒ	é“å…·	å˜è„¸
+		ÓÎÏ·ÔªËØ
+			»¶ÀÖÇò	µÀ¾ß	±äÁ³
 
-		æ¸¸æˆè¶£å‘³
-			ç”Ÿäº§é•œå¤´ç‰¹å†™
-			äº§æˆ¿èƒŒæ™¯
+		ÓÎÏ·È¤Î¶
+			Éú²ú¾µÍ·ÌØĞ´
+			²ú·¿±³¾°
 			
 	*/
 
-	// - ç‰©ä½“æ€»ç½² -
-	[Header("æ¸¸æˆæ€»ç½²")]
+	// - ÎïÌå×ÜÊğ -
+	[Header("ÓÎÏ·×ÜÊğ")]
 	public GameObject GameController;
-	// å‡ºç”Ÿç‚¹
+	// ³öÉúµã
 	private Vector3 spawnPoint;
 	private Vector3 joyBallSpawnPoint;
 
-	// - æ§åˆ¶ä¸­å¿ƒ -
-	// è¾¹ç•Œæ§åˆ¶å¼€å…³
-	[Header("è¾¹ç•Œæ§åˆ¶")]
+	// - ¿ØÖÆÖĞĞÄ -
+	// ±ß½ç¿ØÖÆ¿ª¹Ø
+	[Header("±ß½ç¿ØÖÆ")]
 	public bool BorderControl = true;
 	private bool borderTopC = true;
 	private bool borderBottomC = true;
 	private bool borderLeftC = true;
 	private bool borderRightC = true;
-	// è¾¹ç•Œæ§åˆ¶å†…å®¹
+	// ±ß½ç¿ØÖÆÄÚÈİ
 	private GameObject borderTop;
 	private GameObject borderBottom;
 	private GameObject borderLeft;
 	private GameObject borderRight;
 
-	// é¢éƒ¨æ´»è·ƒæ¨¡å¼ true ä¸º æ´»è·ƒ false ä¸ºæ­»æ¿ é»˜è®¤ä¸ºæ´»è·ƒ
-	[Header("é¢éƒ¨æ´»è·ƒ")]
+	// Ãæ²¿»îÔ¾Ä£Ê½ true Îª »îÔ¾ false ÎªËÀ°å Ä¬ÈÏÎª»îÔ¾
+	[Header("Ãæ²¿»îÔ¾")]
 	public bool FaceMode = true;
 
-	// - æ¸¸æˆè´´å›¾å’Œæ•°æ® -
-	// * è´´å›¾ *
-	// ç›’å­æ¡†
+	// - ÓÎÏ·ÌùÍ¼ºÍÊı¾İ -
+	// * ÌùÍ¼ *
+	// ºĞ×Ó¿ò
 	private Sprite boxFrame;
 	private Sprite[] boxEye;
 	private Sprite[] boxEyeBall;
 	private Sprite[] boxMouth;
 	private Sprite[] boxNose;
-	// * æ•°æ® * 
+	// * Êı¾İ * 
 	private string[] dEye;
 	private string[] dEyeBall;
 	private string[] dMouth;
 	private string[] dNose;
 
-	// - æ¸¸æˆå…ƒç´ åŠè®¡ç®—æ•°æ® -
-	// ç”¨äºå­˜å‚¨ç›’å­
+	// - ÓÎÏ·ÔªËØ¼°¼ÆËãÊı¾İ -
+	// ÓÃÓÚ´æ´¢ºĞ×Ó
 	private ArrayList Boxs;
 	private Vector3 boxSize = new Vector3(1, 1, 1);
 
 	// - - - - - - - - - - -
+	// - ÊôĞÔ¿ØÖÆ -
+	// »ñÈ¡ÉÏ±ß¿ò
+	public GameObject BorderTop
+	{
+		get
+		{
+			return borderTop;
+		}
+	}
 
-	// - è¾¹ç•Œæ§åˆ¶ -
+	// »ñÈ¡ÏÂ±ß¿ò
+	public GameObject BorderBottom
+	{
+		get
+		{
+			return borderBottom;
+		}
+	}
+
+	// »ñÈ¡×ó±ß¿ò
+	public GameObject BorderLeft
+	{
+		get
+		{
+			return borderLeft;
+		}
+	}
+
+	// »ñÈ¡ÓÒ±ß¿ò
+	public GameObject BorderRight
+	{
+		get
+		{
+			return borderRight;
+		}
+	}
+
+	// - - - - - - - - - - -
+
+	// - ±ß½ç¿ØÖÆ -
 	void BordersControl()
 	{
-		// å…è®¸æ§åˆ¶
+		// ÔÊĞí¿ØÖÆ
 		if(BorderControl){
-			// ä¸Šæ§åˆ¶
+			// ÉÏ¿ØÖÆ
 			if(borderTopC){
 				borderTop.transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
 			}
-			// ä¸‹æ§åˆ¶
+			// ÏÂ¿ØÖÆ
 			if(borderBottomC){
 				borderBottom.transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
 			}
-			// å·¦æ§åˆ¶
+			// ×ó¿ØÖÆ
 			if(borderLeftC){
 				borderLeft.transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
 			}
-			// å³æ§åˆ¶
+			// ÓÒ¿ØÖÆ
 			if(borderRightC){
 				borderRight.transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
 			}
 		}
 	}
 
-	// - åˆ›å»ºç›’å­ -
+	// - ´´½¨ºĞ×Ó -
 	public void CreateBox()
 	{
-    	// åˆ›å»ºä¸€ä¸ªæ–°çš„ç›’å­(èº¯ä½“)
+    	// ´´½¨Ò»¸öĞÂµÄºĞ×Ó(ÇûÌå)
     	GameObject newBox = new GameObject();
-    	// ç»™ç›’å­æ·»åŠ MiniBoxæ§åˆ¶å™¨(çµé­‚)
+    	// ¸øºĞ×ÓÌí¼ÓMiniBox¿ØÖÆÆ÷(Áé»ê)
     	newBox.AddComponent<MiniBox>();
-    	// æ§åˆ¶MiniBox(é™„èº«)
+    	// ¿ØÖÆMiniBox(¸½Éí)
     	MiniBox box = newBox.GetComponent<MiniBox>();
-    	// ç»‘å®šç›’å­ä¸MiniBox(æ†ç»‘)
+    	// °ó¶¨ºĞ×ÓÓëMiniBox(À¦°ó)
     	box.SetBoxSelf(newBox);
-    	// ç»™ç›’å­æŒ‡å®šä»å±çš„æ§åˆ¶å™¨(å¯„å®¿)
+    	// ¸øºĞ×ÓÖ¸¶¨´ÓÊôµÄ¿ØÖÆÆ÷(¼ÄËŞ)
     	box.GC = this.GetComponent<MainControllers>();
-    	// ç»™ç›’å­å‘½å(åå­—)
+    	// ¸øºĞ×ÓÃüÃû(Ãû×Ö)
     	box.MyName = "Box";
-    	// è®¾ç½®ç¼©æ”¾æ¯”ä¾‹(ä½“å½¢)
+    	// ÉèÖÃËõ·Å±ÈÀı(ÌåĞÎ)
     	boxSize = new Vector3(0.7f, 0.7f, 0.7f);
     	box.SetScaleSize(boxSize);
-        // å†³å®šå¿ƒçµæ§åˆ¶
+        // ¾ö¶¨ĞÄÁé¿ØÖÆ
         if (!FaceMode){box.BPsychomotor = false;}
-        // è®¾ç½®ç›’å­é¢éƒ¨
+        // ÉèÖÃºĞ×ÓÃæ²¿
         int[] face = new int[4];
     	face[0] = Random.Range(0, dEye.Length);
     	face[1] = Random.Range(0, dEyeBall.Length);
     	face[2] = Random.Range(0, dNose.Length);
     	face[3] = Random.Range(0, dMouth.Length);
     	box.SetBoxFace(face);
-    	// ç”Ÿæˆç›’å­(å‡ºç”Ÿ)
+    	// Éú³ÉºĞ×Ó(³öÉú)
     	box.SetGameObject();
 
-	    // ä»å‡ºç”Ÿç‚¹å‡ºç”Ÿ
+	    // ´Ó³öÉúµã³öÉú
+	    box.MySpawnPoint = spawnPoint;
 	    newBox.transform.position = spawnPoint;
+
+	    // ½«ºĞ×Ó¼ÓÈëµ½´ó¼¯ºÏ
+	    Boxs.Add(newBox);
 
 	}
 
-	// - æ‰¾å¯»GameObject -
+	// - ÕÒÑ°GameObject -
 	GameObject FindIt(string him)
 	{
 		return GameObject.Find(him);
 	}
 
-	// - è·å–ç›’å­æ¡† -
+	// - »ñÈ¡ºĞ×Ó¿ò -
 	public Sprite GetBoxFrame()
 	{
 		return boxFrame;
 	}
 
-	// - è·å–çœ¼çœ¶ -
+	// - »ñÈ¡ÑÛ¿ô -
 	public Sprite GetBoxEye(int eye)
 	{
 		return boxEye[eye];
 	}
 
-	// - è·å–çœ¼çƒ -
+	// - »ñÈ¡ÑÛÇò -
 	public Sprite GetBoxEyeBall(int eyeball)
 	{
 		return boxEyeBall[eyeball];
 	}
 	
-	// - è·å–é¼»å­ -
+	// - »ñÈ¡±Ç×Ó -
 	public Sprite GetBoxNose(int nose)
 	{
 		return boxNose[nose];
 	}
 
-	// - è·å–å˜´ -
+	// - »ñÈ¡×ì -
 	public Sprite GetBoxMouth(int mouth)
 	{
 		return boxMouth[mouth];
 	}
 
-	// - æ‰¾å¯»å˜´çš„åœ°å€ -
+	// - ÕÒÑ°×ìµÄµØÖ· -
 	public int GetMouthNumber(string him)
 	{
 		int tMouth = -1;
@@ -179,32 +221,32 @@ public class MainControllers : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		// åˆå§‹åŒ–
+		// ³õÊ¼»¯
 		Init();
-		// è¾¹ç•Œæ§åˆ¶
+		// ±ß½ç¿ØÖÆ
 		BordersControl();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		// è¾¹ç•Œæ§åˆ¶
+		// ±ß½ç¿ØÖÆ
 		BordersControl();
 
 	}
 
-	// - åˆå§‹åŒ– -
+	// - ³õÊ¼»¯ -
 	void Init()
 	{
-    	// è½½å…¥GameController
+    	// ÔØÈëGameController
         //GameController = GameObject.Find("GameController");
         GameController = FindIt("GameController");
 
-        // è½½å…¥è¾¹æ¡†
+        // ÔØÈë±ß¿ò
         GameObject Borders = new GameObject();
         Borders.name = "Borders";
         Borders.transform.position = new Vector3(0, 0, 0);
 
-        // ä¸Šè¾¹æ¡†
+        // ÉÏ±ß¿ò
         borderTop = new GameObject();
         borderTop.name = "Top";
         borderTop.transform.parent = Borders.transform;
@@ -214,7 +256,7 @@ public class MainControllers : MonoBehaviour {
         borderTop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderTop.AddComponent<BoxCollider2D>();
 
-        // ä¸‹è¾¹æ¡†
+        // ÏÂ±ß¿ò
         borderBottom = new GameObject();
         borderBottom.name = "Bottom";
         borderBottom.transform.parent = Borders.transform;
@@ -224,7 +266,7 @@ public class MainControllers : MonoBehaviour {
         borderBottom.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderBottom.AddComponent<BoxCollider2D>();
 
-        // å·¦è¾¹æ¡†
+        // ×ó±ß¿ò
         borderLeft = new GameObject();
         borderLeft.name = "Left";
         borderLeft.transform.parent = Borders.transform;
@@ -233,7 +275,7 @@ public class MainControllers : MonoBehaviour {
         borderLeft.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderLeft.AddComponent<BoxCollider2D>();
 
-        // å³è¾¹æ¡†
+        // ÓÒ±ß¿ò
         borderRight = new GameObject();
         borderRight.name = "Right";
         borderRight.transform.parent = Borders.transform;
@@ -249,7 +291,7 @@ public class MainControllers : MonoBehaviour {
 	        borderRight = FindIt("Borders/Right");
         */
 
-        // æ•°æ®å®šä¹‰
+        // Êı¾İ¶¨Òå
         // Eye = new string[]{"Block", "Round", "Triangle", "Triangle-Right"};
         dEye = new string[]{
             "Block",
@@ -288,32 +330,32 @@ public class MainControllers : MonoBehaviour {
             "Rect"
         };
 
-        // - èµ„æºè½½å…¥ -
-        // ç›’å­æ¡†
+        // - ×ÊÔ´ÔØÈë -
+        // ºĞ×Ó¿ò
         boxFrame = Resources.Load<Sprite>("Scenes/Box_Frame");
         boxEye = new Sprite[dEye.Length];
         boxEyeBall = new Sprite[dEyeBall.Length];
         boxNose = new Sprite[dNose.Length];
         boxMouth = new Sprite[dMouth.Length];
-        // çœ¼ç›
+        // ÑÛ¾¦
         for(int i = 0; i < dEye.Length; i++)
         {
             string t = "Scenes/Eye/" + dEye[i];
             boxEye[i] = Resources.Load<Sprite>(t);
         }
-        // çœ¼çƒ
+        // ÑÛÇò
         for(int i = 0; i < dEyeBall.Length; i++)
         {
             string t = "Scenes/EyeBall/" + dEyeBall[i];
             boxEyeBall[i] = Resources.Load<Sprite>(t);
         }
-        // é¼»å­
+        // ±Ç×Ó
         for(int i = 0; i < dNose.Length; i++)
         {
             string t = "Scenes/Nose/" + dNose[i];
             boxNose[i] = Resources.Load<Sprite>(t);
         }
-        // å˜´
+        // ×ì
         for(int i = 0; i < dMouth.Length; i++)
         {
             string t = "Scenes/Mouth/" + dMouth[i];
@@ -321,8 +363,10 @@ public class MainControllers : MonoBehaviour {
         }
 
         // - - - - - - - - - - - 
-        // - åˆå§‹åŒ–å‡ºç”Ÿç‚¹ -
+        // - ³õÊ¼»¯³öÉúµã -
         spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
 
+        // - ³õÊ¼»¯ºĞ×Ó -
+        Boxs = new ArrayList();
 	}
 }
