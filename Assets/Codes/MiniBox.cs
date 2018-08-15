@@ -81,7 +81,7 @@ public class MiniBox : MonoBehaviour {
         }
         set
         {
-            mouth = Mouth;
+            mouth = value;
         }
     }
     public int Feature
@@ -184,9 +184,7 @@ public class MiniBox : MonoBehaviour {
         this.Eye = face[0];
         this.EyeBall = face[1];
         this.Nose = face[2];
-        if(!GC.FaceMode){
-            this.Mouth = face[3];
-        }
+        this.Mouth = face[3];
     }
 
     // - 设置心情 -
@@ -264,9 +262,7 @@ public class MiniBox : MonoBehaviour {
         Mouth.name = "EyeMouth";
         Mouth.transform.parent = Face.transform;
         Mouth.AddComponent<SpriteRenderer>();
-        if(!GC.FaceMode){
-            Mouth.GetComponent<SpriteRenderer>().sprite = GC.GetBoxMouth(mouth);
-        }
+        Mouth.GetComponent<SpriteRenderer>().sprite = GC.GetBoxMouth(this.Mouth);
         // 显示优先级
         Mouth.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
@@ -276,8 +272,6 @@ public class MiniBox : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        // - 控制心情 开关-
-        BPsychomotor = GC.FaceMode;
 
 	}
 	

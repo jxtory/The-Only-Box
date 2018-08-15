@@ -102,8 +102,10 @@ public class MainControllers : MonoBehaviour {
     	// 设置缩放比例(体形)
     	boxSize = new Vector3(0.7f, 0.7f, 0.7f);
     	box.SetScaleSize(boxSize);
-    	// 设置盒子面部
-    	int[] face = new int[4];
+        // 决定心灵控制
+        if (!FaceMode){box.BPsychomotor = false;}
+        // 设置盒子面部
+        int[] face = new int[4];
     	face[0] = Random.Range(0, dEye.Length);
     	face[1] = Random.Range(0, dEyeBall.Length);
     	face[2] = Random.Range(0, dNose.Length);
