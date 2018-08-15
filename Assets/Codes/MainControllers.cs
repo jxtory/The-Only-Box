@@ -11,7 +11,7 @@ public class MainControllers : MonoBehaviour {
 		Code说明：方块、盒子、立方体、Box	以下均简称盒子
 
 		游戏模式
-			1 趣味模式	2 超强模式
+			1 趣味模式	2 超强模式 3 故事模式
 
 		游戏元素
 			欢乐球	道具	变脸
@@ -213,8 +213,13 @@ public class MainControllers : MonoBehaviour {
     	// 生成盒子(出生)
     	box.SetGameObject();
 	    // 从出生点出生
-	    box.MySpawnPoint = spawnPoint;
-	    newBox.transform.position = spawnPoint;
+	    if(spawnPoint == new Vector3(0, 0, 0)){
+	    	box.MySpawnPoint = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
+	    	newBox.transform.position = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
+	    } else {
+		    box.MySpawnPoint = spawnPoint;
+		    newBox.transform.position = spawnPoint;
+	    }
 
 	    // 将盒子加入到大集合
 	    Boxs.Add(newBox);
