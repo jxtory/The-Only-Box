@@ -15,11 +15,19 @@ public class MainControllers : MonoBehaviour {
 
 		游戏元素
 			欢乐球	道具	变脸
+
+		游戏趣味
+			生产镜头特写
+			产房背景
+			
 	*/
 
 	// - 物体总署 -
 	[Header("游戏总署")]
 	public GameObject GameController;
+	// 出生点
+	private Vector3 spawnPoint;
+	private Vector3 joyBallSpawnPoint;
 
 	// - 控制中心 -
 	// 边界控制开关
@@ -115,7 +123,7 @@ public class MainControllers : MonoBehaviour {
     	box.SetGameObject();
 
 	    // 从出生点出生
-	    newBox.transform.position = new Vector3();
+	    newBox.transform.position = spawnPoint;
 
 	}
 
@@ -311,6 +319,10 @@ public class MainControllers : MonoBehaviour {
             string t = "Scenes/Mouth/" + dMouth[i];
             boxMouth[i] = Resources.Load<Sprite>(t);
         }
-        
+
+        // - - - - - - - - - - - 
+        // - 初始化出生点 -
+        spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+
 	}
 }

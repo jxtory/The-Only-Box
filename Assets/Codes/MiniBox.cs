@@ -281,4 +281,15 @@ public class MiniBox : MonoBehaviour {
         if(BPsychomotor){Psychomotor();}
 		
 	}
+
+    /*
+        void OnBecameVisible(){
+            Debug.Log("In camera");
+        }
+
+        void OnBecameInvisible(){
+            Debug.Log("not in camera");
+        }
+    */
+
 }
