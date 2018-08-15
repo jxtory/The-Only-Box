@@ -179,8 +179,9 @@ public class MainControllers : MonoBehaviour {
 			Areas.Add(area);
 			// - 初始化出生点 -
 			spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+			// - 初始化入口位置 -
+			entranceDir = FindIt("Borders/" + area.GetComponent<AreaCenter>().EntranceDir);
 		}
-
 
 	}
 
@@ -231,7 +232,7 @@ public class MainControllers : MonoBehaviour {
 	{
 		for(int i = 0; i < Boxs.Count; i++){
 			GameObject box = Boxs[i] as GameObject;
-			if(box.GetComponent<MiniBox>().Working){
+			if(!box.GetComponent<MiniBox>().Working){
 				return true;
 			}
 
@@ -242,15 +243,21 @@ public class MainControllers : MonoBehaviour {
 	// - 入口门禁 -
 	private void entranceGuard()
 	{
-		Vector3 pos = new Vector3(0, (float)Camera.main.orthographicSize, 0);
-		float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
-		float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
-
-		if(entranceControl()){
+		// 原始点
+		Vector3 pos_s = getEntranceTargetPos(entranceDir);
+		// 开启点
+		Vector3 pos_o = getEntranceTargetPos(entranceDir, 1);
+		if(entranceControl() == true){
+            SetBorderControlPart(entranceDir, false);
+            entranceDir.transform.position = Vector3.Lerp(entranceDir.transform.position, pos_o, 0.025f);
 
 		} else {
-			borderTop.transform.position = Vector3.Lerp(borderTop.transform.position, pos, 0.5f);
+            if(Vector3.Distance(entranceDir.transform.position, pos_s) < 0.50f){
+            	SetBorderControlPart(entranceDir);
+            } else {
+            	entranceDir.transform.position = Vector3.Lerp(entranceDir.transform.position, pos_s, 0.025f);
 
+            }
 		}
 	}
 
@@ -290,6 +297,54 @@ public class MainControllers : MonoBehaviour {
 		return boxMouth[mouth];
 	}
 
+	// - 获取门禁目标位置 -
+	private Vector3 getEntranceTargetPos(GameObject him, int kind = 0)
+	{
+		float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
+		float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
+
+		Vector3 pos = new Vector3();
+
+		if(kind == 0){
+			if(him == borderTop){
+				pos = new Vector3(cmx, (float)Camera.main.orthographicSize + cmy, 0);
+			}
+
+			if(him == borderBottom){
+				pos = new Vector3(cmx, (float)-Camera.main.orthographicSize + cmy, 0);
+			}
+
+			if(him == borderLeft){
+				pos = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy, 0);
+			}
+
+			if(him == borderRight){
+				pos = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy, 0);
+			}
+
+		} else {
+			if(him == borderTop){
+				pos = new Vector3(cmx + entranceDir.transform.localScale.y, (float)Camera.main.orthographicSize + cmy, 0);
+			}
+
+			if(him == borderBottom){
+				pos = new Vector3(cmx + entranceDir.transform.localScale.y, (float)-Camera.main.orthographicSize + cmy, 0);
+			}
+
+			if(him == borderLeft){
+				pos = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy - entranceDir.transform.localScale.y, 0);
+			}
+
+			if(him == borderRight){
+				pos = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy - entranceDir.transform.localScale.y, 0);
+			}
+
+		}
+
+		return pos;
+
+	}
+
 	// - 找寻嘴的地址 -
 	public int GetMouthNumber(string him)
 	{
@@ -303,6 +358,30 @@ public class MainControllers : MonoBehaviour {
 		}
 		return tMouth;
 	}
+
+	// - 设置边缘部分控制权 -
+	private bool SetBorderControlPart(GameObject him, bool b = true)
+	{
+		if(him == borderTop){
+			borderTopC = b;
+		}
+
+		if(him == borderBottom){
+			borderBottomC = b;
+		}
+
+		if(him == borderLeft){
+			borderLeftC = b;
+		}
+
+		if(him == borderRight){
+			borderRightC = b;
+		}
+
+		return b;
+	}
+
+	// * - - - - - - - - - - *
 
 	// Use this for initialization
 	void Start () {
