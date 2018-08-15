@@ -25,9 +25,6 @@ public class MainControllers : MonoBehaviour {
 	// - 物体总署 -
 	[Header("游戏总署")]
 	public GameObject GameController;
-	// 出生点
-	private Vector3 spawnPoint;
-	private Vector3 joyBallSpawnPoint;
 
 	// - 控制中心 -
 	// 边界控制开关
@@ -65,6 +62,13 @@ public class MainControllers : MonoBehaviour {
 	// 用于存储盒子
 	private ArrayList Boxs;
 	private Vector3 boxSize = new Vector3(1, 1, 1);
+	// 出生点
+	private Vector3 spawnPoint;
+	private Vector3 joyBallSpawnPoint;
+
+	[Header("跟随镜头(场景)")]
+	// 场景是否跟随主镜头
+	public bool FollowCamera = false;
 
 	// - - - - - - - - - - -
 	// - 属性控制 -
@@ -109,23 +113,25 @@ public class MainControllers : MonoBehaviour {
 	// - 边界控制 -
 	void BordersControl()
 	{
+        float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
+        float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
 		// 允许控制
 		if(BorderControl){
 			// 上控制(入口)
 			if(borderTopC){
-				borderTop.transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+				borderTop.transform.position = new Vector3(cmx, (float)Camera.main.orthographicSize + cmy, 0);
 			}
 			// 下控制
 			if(borderBottomC){
-				borderBottom.transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
+				borderBottom.transform.position = new Vector3(cmx, (float)-Camera.main.orthographicSize + cmy, 0);
 			}
 			// 左控制
 			if(borderLeftC){
-				borderLeft.transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
+				borderLeft.transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy, 0);
 			}
 			// 右控制
 			if(borderRightC){
-				borderRight.transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
+				borderRight.transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy, 0);
 			}
 		}
 	}
@@ -146,7 +152,6 @@ public class MainControllers : MonoBehaviour {
     	// 给盒子命名(名字)
     	box.MyName = "Box";
     	// 设置缩放比例(体形)
-    	boxSize = new Vector3(0.7f, 0.7f, 0.7f);
     	box.SetScaleSize(boxSize);
         // 决定心灵控制
         if (!FaceMode){box.BPsychomotor = false;}
@@ -186,6 +191,9 @@ public class MainControllers : MonoBehaviour {
 	private void entranceGuard()
 	{
 		Vector3 pos = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+		float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
+		float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
+
 		if(entranceControl()){
 
 		} else {
@@ -279,20 +287,22 @@ public class MainControllers : MonoBehaviour {
         borderTop.name = "Top";
         borderTop.transform.parent = Borders.transform;
         borderTop.transform.localScale = new Vector3(1, 26, 1);
-        borderTop.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -90));
+        borderTop.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 90));
         borderTop.AddComponent<SpriteRenderer>();
         borderTop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderTop.AddComponent<BoxCollider2D>();
+        borderTop.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
         // 下边框
         borderBottom = new GameObject();
         borderBottom.name = "Bottom";
         borderBottom.transform.parent = Borders.transform;
         borderBottom.transform.localScale = new Vector3(1, 26, 1);
-        borderBottom.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -90));
+        borderBottom.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 90));
         borderBottom.AddComponent<SpriteRenderer>();
         borderBottom.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderBottom.AddComponent<BoxCollider2D>();
+        borderBottom.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
         // 左边框
         borderLeft = new GameObject();
@@ -302,6 +312,7 @@ public class MainControllers : MonoBehaviour {
         borderLeft.AddComponent<SpriteRenderer>();
         borderLeft.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderLeft.AddComponent<BoxCollider2D>();
+        borderLeft.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
         // 右边框
         borderRight = new GameObject();
@@ -311,6 +322,7 @@ public class MainControllers : MonoBehaviour {
         borderRight.AddComponent<SpriteRenderer>();
         borderRight.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderRight.AddComponent<BoxCollider2D>();
+        borderRight.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
         /*
 	        borderTop = FindIt("Borders/Top");
