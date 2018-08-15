@@ -20,7 +20,7 @@ public class MiniBox : MonoBehaviour {
     // 大小	
     private Vector3 scaleSize = new Vector3(1.0f, 1.0f, 1.0f);
     // 在岗
-    public bool working;
+    private bool working;
     // - 面部细节 -
     public bool BPsychomotor = true;
     // 眼眶
@@ -114,6 +114,15 @@ public class MiniBox : MonoBehaviour {
         set
         {
             mySpawnPoint = value;
+        }
+    }
+
+    // 获取在岗值
+    public bool Working
+    {
+        get
+        {
+            return working;
         }
     }
 

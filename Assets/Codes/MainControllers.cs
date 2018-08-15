@@ -111,7 +111,7 @@ public class MainControllers : MonoBehaviour {
 	{
 		// 允许控制
 		if(BorderControl){
-			// 上控制
+			// 上控制(入口)
 			if(borderTopC){
 				borderTop.transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
 			}
@@ -167,6 +167,31 @@ public class MainControllers : MonoBehaviour {
 	    // 将盒子加入到大集合
 	    Boxs.Add(newBox);
 
+	}
+
+	// - 入口控制 -
+	private bool entranceControl()
+	{
+		for(int i = 0; i < Boxs.Count; i++){
+			GameObject box = Boxs[i] as GameObject;
+			if(box.GetComponent<MiniBox>().Working){
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	// - 入口门禁 -
+	private void entranceGuard()
+	{
+		Vector3 pos = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+		if(entranceControl()){
+
+		} else {
+			borderTop.transform.position = Vector3.Lerp(borderTop.transform.position, pos, 0.5f);
+
+		}
 	}
 
 	// - 找寻GameObject -
@@ -231,6 +256,9 @@ public class MainControllers : MonoBehaviour {
 	void Update () {
 		// 边界控制
 		BordersControl();
+
+		// 入口控制
+		entranceGuard();
 
 	}
 
