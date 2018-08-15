@@ -24,7 +24,7 @@ public class MainControllers : MonoBehaviour {
 	// - 控制中心 -
 	// 边界控制开关
 	[Header("边界控制")]
-	public bool BorderControl = false;
+	public bool BorderControl = true;
 	private bool borderTopC = true;
 	private bool borderBottomC = true;
 	private bool borderLeftC = true;
@@ -67,19 +67,19 @@ public class MainControllers : MonoBehaviour {
 		if(BorderControl){
 			// 上控制
 			if(borderTopC){
-				GameObject.Find("Borders/Top").transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
+				borderTop.transform.position = new Vector3(0, (float)Camera.main.orthographicSize, 0);
 			}
 			// 下控制
 			if(borderBottomC){
-				GameObject.Find("Borders/Bottom").transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
+				borderBottom.transform.position = new Vector3(0, (float)-Camera.main.orthographicSize, 0);
 			}
 			// 左控制
 			if(borderLeftC){
-				GameObject.Find("Borders/Left").transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
+				borderLeft.transform.position = new Vector3((float)(-(Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0, 0);
 			}
 			// 右控制
 			if(borderRightC){
-				GameObject.Find("Borders/Right").transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
+				borderRight.transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize), 0 ,0);
 			}
 		}
 	}
@@ -192,10 +192,54 @@ public class MainControllers : MonoBehaviour {
         GameController = FindIt("GameController");
 
         // 载入边框
-        borderTop = FindIt("Top");
-        borderBottom = FindIt("Bottom");
-        borderLeft = FindIt("Left");
-        borderRight = FindIt("Right");
+        GameObject Borders = new GameObject();
+        Borders.name = "Borders";
+        Borders.transform.position = new Vector3(0, 0, 0);
+
+        // 上边框
+        borderTop = new GameObject();
+        borderTop.name = "Top";
+        borderTop.transform.parent = Borders.transform;
+        borderTop.transform.localScale = new Vector3(1, 26, 1);
+        borderTop.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -90));
+        borderTop.AddComponent<SpriteRenderer>();
+        borderTop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
+        borderTop.AddComponent<BoxCollider2D>();
+
+        // 下边框
+        borderBottom = new GameObject();
+        borderBottom.name = "Bottom";
+        borderBottom.transform.parent = Borders.transform;
+        borderBottom.transform.localScale = new Vector3(1, 26, 1);
+        borderBottom.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -90));
+        borderBottom.AddComponent<SpriteRenderer>();
+        borderBottom.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
+        borderBottom.AddComponent<BoxCollider2D>();
+
+        // 左边框
+        borderLeft = new GameObject();
+        borderLeft.name = "Left";
+        borderLeft.transform.parent = Borders.transform;
+        borderLeft.transform.localScale = new Vector3(1, 12, 1);
+        borderLeft.AddComponent<SpriteRenderer>();
+        borderLeft.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
+        borderLeft.AddComponent<BoxCollider2D>();
+
+        // 右边框
+        borderRight = new GameObject();
+        borderRight.name = "Right";
+        borderRight.transform.parent = Borders.transform;
+        borderRight.transform.localScale = new Vector3(1, 12, 1);
+        borderRight.AddComponent<SpriteRenderer>();
+        borderRight.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
+        borderRight.AddComponent<BoxCollider2D>();
+
+        /*
+	        borderTop = FindIt("Borders/Top");
+	        borderBottom = FindIt("Borders/Bottom");
+	        borderLeft = FindIt("Borders/Left");
+	        borderRight = FindIt("Borders/Right");
+        */
 
         // 数据定义
         // Eye = new string[]{"Block", "Round", "Triangle", "Triangle-Right"};

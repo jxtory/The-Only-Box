@@ -32,7 +32,7 @@ public class MiniBox : MonoBehaviour {
     // 特征
     private int feature;
     // - 心情 - 
-    private int mood;
+    private int mood = 6 * 20;
     // - 视线 -
     private GameObject him;
 
