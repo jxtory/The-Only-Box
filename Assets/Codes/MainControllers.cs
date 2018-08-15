@@ -19,12 +19,16 @@ public class MainControllers : MonoBehaviour {
 		游戏趣味
 			生产镜头特写
 			产房背景
+			产区和其他区域中心
 			
 	*/
 
 	// - 物体总署 -
 	[Header("游戏总署")]
 	public GameObject GameController;
+	// - 区域空间 -
+	[Header("区域空间")]
+	public GameObject AreaSpace;
 
 	// - 控制中心 -
 	// 边界控制开关
@@ -53,18 +57,24 @@ public class MainControllers : MonoBehaviour {
 	private Sprite[] boxMouth;
 	private Sprite[] boxNose;
 	// * 数据 * 
+	// 面部数据
 	private string[] dEye;
 	private string[] dEyeBall;
 	private string[] dMouth;
 	private string[] dNose;
+	// 区域数据
+	private string[] dAreaCenter_DeliVery;
 
 	// - 游戏元素及计算数据 -
 	// 用于存储盒子
+	private ArrayList Areas;
 	private ArrayList Boxs;
 	private Vector3 boxSize = new Vector3(1, 1, 1);
 	// 出生点
 	private Vector3 spawnPoint;
 	private Vector3 joyBallSpawnPoint;
+	// 入口方向
+	private GameObject entranceDir;
 
 	[Header("跟随镜头(场景)")]
 	// 场景是否跟随主镜头
@@ -117,7 +127,7 @@ public class MainControllers : MonoBehaviour {
         float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
 		// 允许控制
 		if(BorderControl){
-			// 上控制(入口)
+			// 上控制
 			if(borderTopC){
 				borderTop.transform.position = new Vector3(cmx, (float)Camera.main.orthographicSize + cmy, 0);
 			}
@@ -134,6 +144,44 @@ public class MainControllers : MonoBehaviour {
 				borderRight.transform.position = new Vector3((float)((Screen.width * 1.0f / Screen.height) * Camera.main.orthographicSize) + cmx, cmy, 0);
 			}
 		}
+	}
+
+	// - 清除子物体 -
+	void ClearThem(GameObject him)
+	{
+		// 遍历所有这个子物体
+		for(int i = 0; i < him.transform.childCount; i++)
+		{
+			// 谢谢Object 对游戏做的贡献！
+			GameObject thankObject = him.transform.GetChild(i).gameObject;
+			// 再见！
+			Destroy(thankObject);
+		}
+	}
+
+	// - 创建区域 -
+	public void CreateArea(int type, string[] team)
+	{
+		/*
+			type 
+				1为产区    2为区域中心
+		*/
+		if(type == 1){
+			ClearThem(AreaSpace);
+			Areas = new ArrayList();
+			// 随机抽取区域
+			string areaname = (string)team[Random.Range(0, team.Length)];
+			areaname = "Scenes/AreaCenter/" + areaname;
+			// 实例化区域
+			GameObject area = (GameObject)Instantiate(Resources.Load(areaname));
+			// 交给区域空间控制器
+			area.transform.parent = AreaSpace.transform;
+			Areas.Add(area);
+			// - 初始化出生点 -
+			spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+		}
+
+
 	}
 
 	// - 创建盒子 -
@@ -164,7 +212,6 @@ public class MainControllers : MonoBehaviour {
     	box.SetBoxFace(face);
     	// 生成盒子(出生)
     	box.SetGameObject();
-
 	    // 从出生点出生
 	    box.MySpawnPoint = spawnPoint;
 	    newBox.transform.position = spawnPoint;
@@ -277,6 +324,12 @@ public class MainControllers : MonoBehaviour {
         //GameController = GameObject.Find("GameController");
         GameController = FindIt("GameController");
 
+        // 创建区域空间
+        GameObject areaSpace = new GameObject();
+        AreaSpace = areaSpace;
+        AreaSpace.name = "AreaSpace";
+        AreaSpace.transform.position = new Vector3(0, 0, 0);
+
         // 载入边框
         GameObject Borders = new GameObject();
         Borders.name = "Borders";
@@ -333,6 +386,7 @@ public class MainControllers : MonoBehaviour {
 
         // 数据定义
         // Eye = new string[]{"Block", "Round", "Triangle", "Triangle-Right"};
+        // 面部数据
         dEye = new string[]{
             "Block",
             "Round",
@@ -370,6 +424,11 @@ public class MainControllers : MonoBehaviour {
             "Rect"
         };
 
+        // 区域数据
+        dAreaCenter_DeliVery = new string[]{
+        	"DeliveryArea"
+        };
+
         // - 资源载入 -
         // 盒子框
         boxFrame = Resources.Load<Sprite>("Scenes/Box_Frame");
@@ -377,24 +436,28 @@ public class MainControllers : MonoBehaviour {
         boxEyeBall = new Sprite[dEyeBall.Length];
         boxNose = new Sprite[dNose.Length];
         boxMouth = new Sprite[dMouth.Length];
+
         // 眼睛
         for(int i = 0; i < dEye.Length; i++)
         {
             string t = "Scenes/Eye/" + dEye[i];
             boxEye[i] = Resources.Load<Sprite>(t);
         }
+
         // 眼球
         for(int i = 0; i < dEyeBall.Length; i++)
         {
             string t = "Scenes/EyeBall/" + dEyeBall[i];
             boxEyeBall[i] = Resources.Load<Sprite>(t);
         }
+
         // 鼻子
         for(int i = 0; i < dNose.Length; i++)
         {
             string t = "Scenes/Nose/" + dNose[i];
             boxNose[i] = Resources.Load<Sprite>(t);
         }
+
         // 嘴
         for(int i = 0; i < dMouth.Length; i++)
         {
@@ -402,11 +465,14 @@ public class MainControllers : MonoBehaviour {
             boxMouth[i] = Resources.Load<Sprite>(t);
         }
 
+        // 给特征预留
+
         // - - - - - - - - - - - 
-        // - 初始化出生点 -
-        spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+        // 创建产区
+        CreateArea(1, dAreaCenter_DeliVery);
 
         // - 初始化盒子 -
         Boxs = new ArrayList();
+        Areas = new ArrayList();
 	}
 }

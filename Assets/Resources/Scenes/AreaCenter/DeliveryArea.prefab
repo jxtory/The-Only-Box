@@ -85,6 +85,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4960132715851120}
+  - component: {fileID: 114171769486774676}
   m_Layer: 0
   m_Name: DeliveryArea
   m_TagString: Untagged
@@ -659,6 +660,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114171769486774676
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1356318120544384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371038923728c5945b8a9a85360c919f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AreaName: DeliveryArea
+  EntranceDir: Top
 --- !u!212 &212051778790292716
 SpriteRenderer:
   m_ObjectHideFlags: 1
