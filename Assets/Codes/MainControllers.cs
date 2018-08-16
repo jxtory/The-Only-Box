@@ -20,6 +20,8 @@ public class MainControllers : MonoBehaviour {
 			生产镜头特写
 			产房背景
 			产区和其他区域中心
+
+		屏幕休眠？	Screen.sleepTimeout = SleepTimeout.NeverSleep;  
 			
 	*/
 

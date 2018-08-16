@@ -21,6 +21,7 @@ public class MiniBox : MonoBehaviour {
     private Vector3 scaleSize = new Vector3(1.0f, 1.0f, 1.0f);
     // 在岗
     private bool working;
+    private bool isJumping;
     // - 面部细节 -
     public bool BPsychomotor = true;
     // 眼眶
@@ -127,6 +128,67 @@ public class MiniBox : MonoBehaviour {
     }
 
     // - - - - - - - - - - -
+
+    // * - - - - - - - - - - *
+
+    // - 人工智能控制器 -
+    public void AIController()
+    {
+        // 站立控制
+        AICToStand();
+
+    }
+
+    // - 人工智能 站立 -
+    private void AICToStand()
+    {
+        // 旋转角度
+        Vector3 rn = BoxSelf.transform.localEulerAngles;
+        // 是否停止运动
+        bool issp = BoxSelf.GetComponent<Rigidbody2D>().IsSleeping();
+        // 绑定刚体
+        Rigidbody2D him = BoxSelf.GetComponent<Rigidbody2D>();
+
+        // 获取欧拉角-角度 还需再行研究
+        float tf = 360 - (rn.z % 360) > 180 ? 360 - (360 - (rn.z % 360)) : 360 - (360 - (rn.z % 360)) - 360;
+
+        // 站立运算
+        if ((tf > 44 || tf < -44) && issp && !isJumping){
+            him.velocity = new Vector2(0, 7f);
+            isJumping = true;
+        }
+
+        // 跳起检测
+        // if(Mathf.Abs(tf) < 45 || him.velocity.magnitude < 0.5f){
+        if(him.velocity.magnitude < 0.5f){
+            isJumping = false;
+        }
+
+        // 跳起中调整位置
+        if (isJumping) {
+            // if (tf > 44 && tf <= 180)
+            if (tf > 0)
+            {
+                Quaternion ros = Quaternion.Euler(0, 0, 25f);
+                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
+                if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 3)
+                {
+                    BoxSelf.transform.rotation = ros;
+                }
+            }
+
+            //if (tf >= -180 && tf < -44)
+            if (tf < 0)
+            {
+                Quaternion ros = Quaternion.Euler(0, 0, -25f);
+                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
+                if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 3)
+                {
+                    BoxSelf.transform.rotation = ros;
+                }
+            }
+        }
+    }
 
     // - 工作检测 -
     void checkWorking()
@@ -346,6 +408,9 @@ public class MiniBox : MonoBehaviour {
 
         // - 查岗 -
         checkWorking();
+
+        // - 人工智能控制 -
+        AIController();
 
 	}
 
