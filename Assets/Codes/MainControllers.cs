@@ -3,28 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MainControllers : MonoBehaviour {
-	/* - - - - - - - - - - 
-		游戏名称： 
-			英：The Only Box
-			中：找到那方块
-
-		Code说明：方块、盒子、立方体、Box	以下均简称盒子
-
-		游戏模式
-			1 趣味模式	2 超强模式 3 故事模式
-
-		游戏元素
-			欢乐球	道具	变脸
-
-		游戏趣味
-			生产镜头特写
-			产房背景
-			产区和其他区域中心
-
-		屏幕休眠？	Screen.sleepTimeout = SleepTimeout.NeverSleep;  
-			
-	*/
-
 	// - 物体总署 -
 	[Header("游戏总署")]
 	public GameObject GameController;

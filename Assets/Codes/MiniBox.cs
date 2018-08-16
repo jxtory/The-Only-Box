@@ -20,8 +20,15 @@ public class MiniBox : MonoBehaviour {
     // 大小	
     private Vector3 scaleSize = new Vector3(1.0f, 1.0f, 1.0f);
     // 在岗
+    [Header("是否工作")]
+    [SerializeField]
     private bool working;
+    // 是否跳跃
     private bool isJumping;
+    // 坠落速度
+    [Header("坠落速度")]
+    [SerializeField]
+    private float magnitude;
     // - 面部细节 -
     public bool BPsychomotor = true;
     // 眼眶
@@ -36,7 +43,11 @@ public class MiniBox : MonoBehaviour {
     // 特征
     private int feature;
     // - 心情 - 
+    [Header("心情值")]
+    [SerializeField]
     private int mood = 6 * 20;
+    private float moodSelfHealing = 0;
+    private int moodState = 0;
     // - 视线 -
     private GameObject him;
 
@@ -134,10 +145,58 @@ public class MiniBox : MonoBehaviour {
     // - 人工智能控制器 -
     public void AIController()
     {
+        // 坠落中
+        AICToFalling();
+
+        // 幸福中
+        AICInHappiness();
+
         // 站立控制
         AICToStand();
 
+
     }
+
+    // - 人工智能 坠落 -
+    private void AICToFalling()
+    {
+        // 绑定刚体
+        Rigidbody2D him = BoxSelf.GetComponent<Rigidbody2D>();
+        this.magnitude = him.velocity.magnitude;
+        // 分析速度
+        if(magnitude > 2){
+            // 焦虑
+            SetMood(4 * 20);
+        }
+
+        if(magnitude > 5){
+            // 不高兴
+            SetMood(3 * 20);
+        }
+
+        if(magnitude > 10){
+            // 难过
+            SetMood(2 * 20);
+        }
+
+    }
+
+    // - 人工智能 幸福中 -
+    private void AICInHappiness()
+    {
+        // 漫长积累
+        moodSelfHealing += 1f + 1f * Time.deltaTime;
+        // 心情应不超过 260 13 * 20 
+        if(mood < 260){
+            // 自愈
+            if(moodSelfHealing > 5){
+                SetMood(mood + 1);
+                moodSelfHealing = 0;
+            }
+        }
+    }
+
+    // - 人工智能 伤心中 -
 
     // - 人工智能 站立 -
     private void AICToStand()
