@@ -148,8 +148,8 @@ public class MiniBox : MonoBehaviour {
         // 坠落中
         AICToFalling();
 
-        // 幸福中
-        AICInHappiness();
+        // 情绪控制
+        AICMoodControl();
 
         // 站立控制
         AICToStand();
@@ -181,19 +181,53 @@ public class MiniBox : MonoBehaviour {
 
     }
 
-    // - 人工智能 幸福中 -
-    private void AICInHappiness()
+    // - 人工智能 情绪控制 -
+    private void AICMoodControl()
     {
         // 漫长积累
         moodSelfHealing += 1f + 1f * Time.deltaTime;
-        // 心情应不超过 260 13 * 20 
-        if(mood < 260){
-            // 自愈
-            if(moodSelfHealing > 5){
-                SetMood(mood + 1);
-                moodSelfHealing = 0;
-            }
+
+        switch(moodState){
+            case 0:
+                if(mood < 100 - 1){
+                    // 自愈
+                    if(moodSelfHealing > 5){
+                        SetMood(mood + 1);
+                        moodSelfHealing = 0;
+                    }
+                } 
+
+                break;
+
+            case 1:
+                if(mood < 260){
+                    // 自愈
+                    if(moodSelfHealing > 5){
+                        SetMood(mood + 1);
+                        moodSelfHealing = 0;
+                    }
+                }
+
+                break;
+            case 2:
+                SetMood(mood);
+
+                break;
+
+            case 3:
+                if(mood > -40){
+                    // 自残
+                    if(moodSelfHealing > 2){
+                        SetMood(mood - 1);
+                        moodSelfHealing = 0;
+                    }
+                }
+                break;
+
+            default:
+                break;
         }
+
     }
 
     // - 人工智能 伤心中 -
