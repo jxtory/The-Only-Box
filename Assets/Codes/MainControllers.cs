@@ -220,7 +220,7 @@ public class MainControllers : MonoBehaviour {
 	}
 
 	// - 创建辅助相机 -
-	void createAuxCamera(Vector3 pos, Vector3[] target, float f_time = 5f)
+	void createAuxCamera(Vector3 pos, Vector3[] target, float f_time = 5f, bool coverMode = true)
 	{
 		// 新建相机
 		if(auxCamera.gameObject != null){Destroy(auxCamera.gameObject);}
@@ -230,6 +230,9 @@ public class MainControllers : MonoBehaviour {
 		auxCamera.transform.localPosition += new Vector3(0, 0, -10);
 		auxCamera.GetComponent<Camera>().backgroundColor = new Color(25 / 255, 25 / 255, 25 / 255, 1f);
 		auxCamera.GetComponent<Camera>().orthographic = true;
+		if(!coverMode){
+			auxCamera.GetComponent<Camera>().rect = new Rect(0.7f, 0.7f, 1f, 1f);
+		}
 		auxCamera.name = "auxCamera";
 
 		// 设置任务轨迹
@@ -447,7 +450,7 @@ public class MainControllers : MonoBehaviour {
 	{
 		if(spawnPoint != new Vector3()){
 			if(joyBallSpawnPoint != new Vector3()){
-				createAuxCamera(Camera.main.transform.position, new Vector3[]{Camera.main.transform.position, spawnPoint, joyBallSpawnPoint, Camera.main.transform.position}, 3f);
+				createAuxCamera(Camera.main.transform.position, new Vector3[]{Camera.main.transform.position, spawnPoint, joyBallSpawnPoint, Camera.main.transform.position}, 3f, false);
 			} else {
 				createAuxCamera(Camera.main.transform.position, new Vector3[]{Camera.main.transform.position, spawnPoint, Camera.main.transform.position}, 3f);
 
