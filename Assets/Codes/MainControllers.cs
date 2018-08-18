@@ -9,6 +9,10 @@ public class MainControllers : MonoBehaviour {
 	// - 区域空间 -
 	[Header("区域空间")]
 	public GameObject AreaSpace;
+	// - 辅助相机 -
+	[SerializeField]
+	[Header("辅助相机")]
+	private GameObject auxCamera = null;
 
 	// - 控制中心 -
 	// 边界控制开关
@@ -59,6 +63,11 @@ public class MainControllers : MonoBehaviour {
 	[Header("跟随镜头(场景)")]
 	// 场景是否跟随主镜头
 	public bool FollowCamera = false;
+	// 辅助相机目标位置	和 显示效率
+	private ArrayList auxCameraTarget;
+	private float auxCameraShowTimer = 5f;
+	private int auxCameraShowTime = 5;
+    private Vector3 auxCameraVelocity = Vector3.zero;
 
 	// - - - - - - - - - - -
 	// - 属性控制 -
@@ -99,6 +108,23 @@ public class MainControllers : MonoBehaviour {
 	}
 
 	// - - - - - - - - - - -
+
+	// - 辅助相机控制 -
+	void auxCameraControl()
+	{
+		// 查看辅助相机和任务 如果存在立即投入工作
+		if(auxCamera != null && auxCameraTarget != null && auxCameraTarget.Count > 0){
+            Vector3 tg = (Vector3)auxCameraTarget[0];
+			Vector3 tp = auxCamera.transform.position;
+            if (Vector3.Distance(tp, tg) > 0.5f){
+				auxCamera.transform.position = Vector3.SmoothDamp(tp, tg, ref auxCameraVelocity, auxCameraShowTimer / auxCameraShowTime);
+			} else{
+				auxCamera.transform.position = tg;
+                auxCameraTarget.Remove(0);
+                auxCameraVelocity = Vector3.zero;
+			}
+		}
+	}
 
 	// - 边界控制 -
 	void BordersControl()
@@ -162,6 +188,30 @@ public class MainControllers : MonoBehaviour {
 			// - 初始化入口位置 -
 			entranceDir = FindIt("Borders/" + area.GetComponent<AreaCenter>().EntranceDir);
 		}
+
+	}
+
+	// - 创建辅助相机 -
+	void createAuxCamera(Vector3 pos, Vector3[] target, float f_time = 5f)
+	{
+		// 新建相机
+		auxCamera = new GameObject();
+		auxCamera.AddComponent<Camera>();
+		auxCamera.transform.position = pos;
+		auxCamera.GetComponent<Camera>().backgroundColor = new Color(25, 25, 25, 255);
+		auxCamera.name = "auxCamera";
+
+		// 设置任务轨迹
+		auxCameraTarget = new ArrayList();
+		for(int i = 0; i < target.Length; i++){
+			auxCameraTarget.Add(target[i]);
+		}
+
+		// 设置任务时间
+		auxCameraShowTimer = f_time;
+
+		// 设置任务次数
+		auxCameraShowTime = target.Length;
 
 	}
 
@@ -363,24 +413,6 @@ public class MainControllers : MonoBehaviour {
 
 	// * - - - - - - - - - - *
 
-	// Use this for initialization
-	void Start () {
-		// 初始化
-		Init();
-		// 边界控制
-		BordersControl();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		// 边界控制
-		BordersControl();
-
-		// 入口控制
-		entranceGuard();
-
-	}
-
 	// - 初始化 -
 	void Init()
 	{
@@ -539,4 +571,38 @@ public class MainControllers : MonoBehaviour {
         Boxs = new ArrayList();
         Areas = new ArrayList();
 	}
+
+	// - 初始化 -
+	void Awake()
+	{
+		// 初始化
+		Init();
+	}
+
+	// Use this for initialization
+	void Start () {
+		// 出生点特写
+		if(spawnPoint != new Vector3()){
+			createAuxCamera(spawnPoint, new Vector3[]{Camera.main.transform.position});
+
+		}
+
+		// 边界控制
+		BordersControl();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		// 边界控制
+		BordersControl();
+
+		// 入口控制
+		entranceGuard();
+
+		// 辅助相机控制
+		auxCameraControl();
+
+	}
+
+// End
 }
