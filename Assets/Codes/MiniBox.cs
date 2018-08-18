@@ -164,19 +164,19 @@ public class MiniBox : MonoBehaviour {
         Rigidbody2D him = BoxSelf.GetComponent<Rigidbody2D>();
         this.magnitude = him.velocity.magnitude;
         // 分析速度
-        if(magnitude > 2){
+        if(magnitude > 3 && !isJumping){
             // 焦虑
-            SetMood(4 * 20);
+            SetMood(4 * 20 - 10);
         }
 
-        if(magnitude > 5){
+        if(magnitude > 5 && !isJumping){
             // 不高兴
-            SetMood(3 * 20);
+            SetMood(3 * 20 - 10);
         }
 
-        if(magnitude > 10){
+        if(magnitude > 15 && !isJumping){
             // 难过
-            SetMood(2 * 20);
+            SetMood(2 * 20 - 10);
         }
 
     }
@@ -187,7 +187,11 @@ public class MiniBox : MonoBehaviour {
         // 漫长积累
         moodSelfHealing += 1f + 1f * Time.deltaTime;
 
+        // 心情限制
+        //int limit;
+
         switch(moodState){
+            // 安心   < 100 - 1
             case 0:
                 if(mood < 100 - 1){
                     // 自愈
@@ -199,6 +203,7 @@ public class MiniBox : MonoBehaviour {
 
                 break;
 
+            // 开心   < 260
             case 1:
                 if(mood < 260){
                     // 自愈
@@ -209,11 +214,14 @@ public class MiniBox : MonoBehaviour {
                 }
 
                 break;
+
+            // 灰心
             case 2:
                 SetMood(mood);
 
                 break;
 
+            // 伤心
             case 3:
                 if(mood > -40){
                     // 自残
@@ -224,6 +232,7 @@ public class MiniBox : MonoBehaviour {
                 }
                 break;
 
+            // 掌控
             default:
                 break;
         }
