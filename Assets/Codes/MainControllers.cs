@@ -66,6 +66,7 @@ public class MainControllers : MonoBehaviour {
 	// 辅助相机目标位置	和 显示效率
 	private ArrayList auxCameraTarget;
 	private float auxCameraShowTimer = 5f;
+	private float auxCameraShowTimerRun = 0f;
 	private int auxCameraShowTime = 5;
     private Vector3 auxCameraVelocity = Vector3.zero;
 
@@ -114,16 +115,41 @@ public class MainControllers : MonoBehaviour {
 	{
 		// 查看辅助相机和任务 如果存在立即投入工作
 		if(auxCamera != null && auxCameraTarget != null && auxCameraTarget.Count > 0){
+			// 设置移动路线
             Vector3 tg = (Vector3)auxCameraTarget[0];
 			Vector3 tp = auxCamera.transform.position;
-            if (Vector3.Distance(tp, tg) > 0.5f){
+
+			// 判断完成度
+            if (Vector3.Distance(tp, tg) > 0.2f){
+            	// 平滑移动和计算轨迹时间
+            	auxCameraShowTimerRun += Time.deltaTime;
 				auxCamera.transform.position = Vector3.SmoothDamp(tp, tg, ref auxCameraVelocity, auxCameraShowTimer / auxCameraShowTime);
+
 			} else{
+				//auxCamera.transform.position = Vector3.SmoothDamp(tp, tg, ref auxCameraVelocity, auxCameraShowTimer / auxCameraShowTime);
+				// 接近时候辅助完成，并在单轨迹时间到达时清空轨迹
 				auxCamera.transform.position = tg;
-                auxCameraTarget.Remove(0);
                 auxCameraVelocity = Vector3.zero;
+				// 计算轨迹时间
+            	auxCameraShowTimerRun += Time.deltaTime;
+            	if(auxCameraShowTimerRun >= auxCameraShowTimer){
+	                auxCameraTarget.Remove(tg);
+	                auxCameraShowTimerRun = 0;
+            	}
+			}
+
+			// 始终保持镜头最前
+			//auxCamera.transform.localPosition = new Vector3(auxCamera.transform.localPosition.x, auxCamera.transform.localPosition.y, (-10 - auxCamera.transform.localPosition.z));
+
+		} else {
+			// 如果任务结束 卸载辅助相机
+			if(auxCameraTarget.Count == 0 && auxCamera != null){
+				Destroy(auxCamera);
+				auxCamera = null;
 			}
 		}
+
+
 	}
 
 	// - 边界控制 -
@@ -185,6 +211,8 @@ public class MainControllers : MonoBehaviour {
 			Areas.Add(area);
 			// - 初始化出生点 -
 			spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+			// - 初始化欢乐球出生点 -
+			joyBallSpawnPoint = FindIt("JoyBallSpawnPoint") != null ? FindIt("JoyBallSpawnPoint").transform.position : new Vector3();
 			// - 初始化入口位置 -
 			entranceDir = FindIt("Borders/" + area.GetComponent<AreaCenter>().EntranceDir);
 		}
@@ -195,10 +223,13 @@ public class MainControllers : MonoBehaviour {
 	void createAuxCamera(Vector3 pos, Vector3[] target, float f_time = 5f)
 	{
 		// 新建相机
+		if(auxCamera.gameObject != null){Destroy(auxCamera.gameObject);}
 		auxCamera = new GameObject();
 		auxCamera.AddComponent<Camera>();
 		auxCamera.transform.position = pos;
-		auxCamera.GetComponent<Camera>().backgroundColor = new Color(25, 25, 25, 255);
+		auxCamera.transform.localPosition += new Vector3(0, 0, -10);
+		auxCamera.GetComponent<Camera>().backgroundColor = new Color(25 / 255, 25 / 255, 25 / 255, 1f);
+		auxCamera.GetComponent<Camera>().orthographic = true;
 		auxCamera.name = "auxCamera";
 
 		// 设置任务轨迹
@@ -411,6 +442,21 @@ public class MainControllers : MonoBehaviour {
 		return b;
 	}
 
+	// - 出生点镜头特写 -
+	void spawnCloseUp()
+	{
+		if(spawnPoint != new Vector3()){
+			if(joyBallSpawnPoint != new Vector3()){
+				createAuxCamera(Camera.main.transform.position, new Vector3[]{Camera.main.transform.position, spawnPoint, joyBallSpawnPoint, Camera.main.transform.position}, 3f);
+			} else {
+				createAuxCamera(Camera.main.transform.position, new Vector3[]{Camera.main.transform.position, spawnPoint, Camera.main.transform.position}, 3f);
+
+			}
+
+		}
+
+	}
+
 	// * - - - - - - - - - - *
 
 	// - 初始化 -
@@ -582,10 +628,7 @@ public class MainControllers : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// 出生点特写
-		if(spawnPoint != new Vector3()){
-			createAuxCamera(spawnPoint, new Vector3[]{Camera.main.transform.position});
-
-		}
+		spawnCloseUp();
 
 		// 边界控制
 		BordersControl();
