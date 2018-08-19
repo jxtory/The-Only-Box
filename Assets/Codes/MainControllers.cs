@@ -32,6 +32,10 @@ public class MainControllers : MonoBehaviour {
 	[Header("面部活跃")]
 	public bool FaceMode = true;
 
+	// 允许生产特写
+	[Header("生产特写")]
+	public bool SpawnCloseUp = true;
+
 	// - 游戏贴图和数据 -
 	// * 贴图 *
 	// 盒子框
@@ -376,8 +380,10 @@ public class MainControllers : MonoBehaviour {
 	    Boxs.Add(newBox);
 
 	    // 随机播放生产特写
-	    if(Random.Range(0,100) < 20){
-	    	createAuxCamera(newBox, 4f);
+	    if(SpawnCloseUp){
+		    if(Random.Range(0,100) < 35){
+		    	createAuxCamera(newBox, 4f);
+		    }
 	    }
 
 	}
