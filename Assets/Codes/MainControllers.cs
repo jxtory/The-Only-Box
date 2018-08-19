@@ -195,6 +195,15 @@ public class MainControllers : MonoBehaviour {
 	{
         float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
         float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
+
+        // 边缘调整
+        float mcWidth = Camera.main.orthographicSize * 2 * Camera.main.aspect;
+        float mcHeight = Camera.main.orthographicSize * 2;
+        borderTop.transform.localScale = new Vector3(1, mcWidth, 1);        
+        borderBottom.transform.localScale = new Vector3(1, mcWidth, 1);        
+        borderLeft.transform.localScale = new Vector3(1, mcHeight, 1);        
+        borderRight.transform.localScale = new Vector3(1, mcHeight, 1);        
+
 		// 允许控制
 		if(BorderControl){
 			// 上控制
@@ -582,12 +591,14 @@ public class MainControllers : MonoBehaviour {
         GameObject Borders = new GameObject();
         Borders.name = "Borders";
         Borders.transform.position = new Vector3(0, 0, 0);
+        float mcWidth = Camera.main.orthographicSize * 2 * Camera.main.aspect;
+        float mcHeight = Camera.main.orthographicSize * 2;
 
         // 上边框
         borderTop = new GameObject();
         borderTop.name = "Top";
         borderTop.transform.parent = Borders.transform;
-        borderTop.transform.localScale = new Vector3(1, 26, 1);
+        borderTop.transform.localScale = new Vector3(1, mcWidth, 1);
         borderTop.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 90));
         borderTop.AddComponent<SpriteRenderer>();
         borderTop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
@@ -598,7 +609,7 @@ public class MainControllers : MonoBehaviour {
         borderBottom = new GameObject();
         borderBottom.name = "Bottom";
         borderBottom.transform.parent = Borders.transform;
-        borderBottom.transform.localScale = new Vector3(1, 26, 1);
+        borderBottom.transform.localScale = new Vector3(1, mcWidth, 1);
         borderBottom.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 90));
         borderBottom.AddComponent<SpriteRenderer>();
         borderBottom.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
@@ -609,7 +620,7 @@ public class MainControllers : MonoBehaviour {
         borderLeft = new GameObject();
         borderLeft.name = "Left";
         borderLeft.transform.parent = Borders.transform;
-        borderLeft.transform.localScale = new Vector3(1, 12, 1);
+        borderLeft.transform.localScale = new Vector3(1, mcHeight, 1);
         borderLeft.AddComponent<SpriteRenderer>();
         borderLeft.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderLeft.AddComponent<BoxCollider2D>();
@@ -619,7 +630,7 @@ public class MainControllers : MonoBehaviour {
         borderRight = new GameObject();
         borderRight.name = "Right";
         borderRight.transform.parent = Borders.transform;
-        borderRight.transform.localScale = new Vector3(1, 12, 1);
+        borderRight.transform.localScale = new Vector3(1, mcHeight, 1);
         borderRight.AddComponent<SpriteRenderer>();
         borderRight.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/Border");
         borderRight.AddComponent<BoxCollider2D>();
