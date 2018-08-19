@@ -269,7 +269,7 @@ public class MiniBox : MonoBehaviour {
         // 跳起中调整位置
         if (isJumping) {
             // if (tf > 44 && tf <= 180)
-            if (tf > 0)
+            if (tf > 44)
             {
                 Quaternion ros = Quaternion.Euler(0, 0, 25f);
                 BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
@@ -280,7 +280,7 @@ public class MiniBox : MonoBehaviour {
             }
 
             //if (tf >= -180 && tf < -44)
-            if (tf < 0)
+            if (tf < -44)
             {
                 Quaternion ros = Quaternion.Euler(0, 0, -25f);
                 BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
@@ -515,6 +515,15 @@ public class MiniBox : MonoBehaviour {
         AIController();
 
 	}
+
+    // - 碰撞检测 -
+    void OnCollisionEnter2D(Collision2D him)
+    {
+        if(him.gameObject.name.Substring(0, 3) == "Box"){
+            Debug.Log("Yes");
+
+        }
+    }
 
     /*
         void OnBecameVisible(){
