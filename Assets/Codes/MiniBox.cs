@@ -47,8 +47,11 @@ public class MiniBox : MonoBehaviour {
     [SerializeField]
     private int mood = 6 * 20;
     private float moodSelfHealing = 0;
+    private int oldMoodState = 0;
     private int moodState = 0;
     // - 观察视线 -
+    [Header("观察对象")]
+    [SerializeField]
     private GameObject watchHim;
     // - 窥视时间 -
     [Header("窥视时间")]
@@ -189,6 +192,11 @@ public class MiniBox : MonoBehaviour {
                 hime = watchHim; 
             }
 
+            // 一定的几率 恢复心情
+            if(Random.Range(0, 100) < 20 && moodState == 2){
+                this.moodState = oldMoodState;
+            } 
+
             // 获取对方方向
             float dx = hime.transform.position.x;
             float dy = hime.transform.position.y;
@@ -202,11 +210,14 @@ public class MiniBox : MonoBehaviour {
                 mvy = 0.15f;
             }
 
+            // 监视当前眼球在眼眶的位置
             Vector3 pos = me.transform.localPosition;
+            float tr = Time.deltaTime * 1f;
 
+            // 眼球转动
             if(x < dx){
                 if(Vector2.Distance(pos, new Vector2(pos.x + mvx, pos.y)) > mvx * 0.1f){
-                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x + mvx, pos.y, 0), Time.deltaTime);
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x + mvx, pos.y, 0), tr);
                 } else {
                     me.transform.localPosition = new Vector3(pos.x + mvx, pos.y, 0);
                 }
@@ -214,7 +225,7 @@ public class MiniBox : MonoBehaviour {
 
             if(x > dx){
                 if(Vector2.Distance(pos, new Vector2(pos.x + mvx, pos.y)) > mvx * 0.1f){
-                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x - mvx, pos.y, 0), Time.deltaTime);
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x - mvx, pos.y, 0), tr);
                 } else {
                     me.transform.localPosition = new Vector3(pos.x - mvx, pos.y, 0);
                 }
@@ -222,7 +233,7 @@ public class MiniBox : MonoBehaviour {
 
             if(y < dy){
                 if(Vector2.Distance(pos, new Vector2(pos.x, pos.y + mvy)) > mvy * 0.1f){
-                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x, pos.y + mvy, 0), Time.deltaTime);
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x, pos.y + mvy, 0), tr);
                 } else {
                     me.transform.localPosition = new Vector3(pos.x, pos.y + mvy, 0);
                 }
@@ -230,18 +241,28 @@ public class MiniBox : MonoBehaviour {
 
             if(y > dy){
                 if(Vector2.Distance(pos, new Vector2(pos.x, pos.y - mvy)) > mvy * 0.1f){
-                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x, pos.y - mvy, 0), Time.deltaTime);
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x, pos.y - mvy, 0), tr);
                 } else {
                     me.transform.localPosition = new Vector3(pos.x, pos.y - mvy, 0);
                 }
             }
 
+            // 监视当前眼球在眼眶的位置
             pos = me.transform.localPosition;
 
-
+            // 眼球转动限制
             me.transform.localPosition = new Vector3(Mathf.Clamp(pos.x, -mvx, mvx), Mathf.Clamp(pos.y, -mvy, mvy), 0);
 
+            // 恢复心情
+            if(watchTimer <= 0 && moodState == 2){this.moodState = oldMoodState;}
+
         } else {
+            // 如果视觉疲劳 清空视线
+            watchHim = null;
+
+            // 正视前方
+            me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, Vector3.zero, 3f * Time.deltaTime);
+
             // 随机找到视线
             /*
                 不动         40-99
@@ -287,13 +308,17 @@ public class MiniBox : MonoBehaviour {
         // 心情限制
         //int limit;
 
+        // 安心 开心 灰心 伤心
+        // 生气|难过|委屈|焦虑|惊讶|惊奇|大惊|沉默|卖萌|微笑|温柔|开心
+
         switch(moodState){
             // 安心   < 100 - 1
             case 0:
-                if(mood < 100 - 1){
+                if(mood < 160 - 1){
                     // 自愈
                     if(moodSelfHealing > 5){
                         SetMood(mood + 1);
+                        if(mood >= 5 * 20){SetMood(7 * 20);}
                         moodSelfHealing = 0;
                     }
                 } 
@@ -306,6 +331,7 @@ public class MiniBox : MonoBehaviour {
                     // 自愈
                     if(moodSelfHealing > 5){
                         SetMood(mood + 1);
+                        if(mood >= 5 * 20){SetMood(7 * 20);}
                         moodSelfHealing = 0;
                     }
                 }
@@ -430,7 +456,7 @@ public class MiniBox : MonoBehaviour {
             mood = 0 ~ 260
             degree = 1 ~ 13
             mood_level = 1 to 13
-            生气|难过|委屈|焦虑|沉默|惊讶|惊奇|大惊|卖萌|微笑|温柔|开心
+            生气|难过|委屈|焦虑|惊讶|惊奇|大惊|沉默|卖萌|微笑|温柔|开心
         */
         // 验证集合
         ArrayList tMouthRange = new ArrayList();
@@ -452,17 +478,17 @@ public class MiniBox : MonoBehaviour {
         // 焦虑
         tMouth = psycho(4, "Nervous");
         tMouthRange.Add(tMouth);
-        // 沉默
-        tMouth = psycho(5, "Silent");
-        tMouthRange.Add(tMouth);
         // 惊讶
-        tMouth = psycho(6, "Surprised1");
+        tMouth = psycho(5, "Surprised1");
         tMouthRange.Add(tMouth);
         // 惊奇
-        tMouth = psycho(7, "Surprised2");
+        tMouth = psycho(6, "Surprised2");
         tMouthRange.Add(tMouth);
         // 大惊
-        tMouth = psycho(8, "Surprised3");
+        tMouth = psycho(7, "Surprised3");
+        tMouthRange.Add(tMouth);
+        // 沉默
+        tMouth = psycho(8, "Silent");
         tMouthRange.Add(tMouth);
         // 卖萌
         tMouth = psycho(9, "Sweet");
@@ -516,6 +542,16 @@ public class MiniBox : MonoBehaviour {
     public void SetMood(int mood)
     {
         this.mood = mood;
+    }
+
+    // - 设置心情状态 -
+    void setMoodState(int f_state)
+    {
+        // 0安心  1开心 2灰心 3伤心
+        // 记录现在的心情
+        oldMoodState = moodState;
+        // 设置新的心情
+        this.moodState = f_state;
     }
 
     // - 设置盒子 -
@@ -620,6 +656,9 @@ public class MiniBox : MonoBehaviour {
         if(f_him.gameObject.name.Substring(0, 3) == "Box"){
             watchHim = f_him.gameObject;
             watchTimer = 5f + Random.Range(0, 10);
+            // 设置心情
+            setMoodState(2);
+            SetMood(5 * 20 - 10);
         }
     }
 
