@@ -55,8 +55,8 @@ public class MainControllers : MonoBehaviour {
 
 	// - 游戏元素及计算数据 -
 	// 用于存储盒子
-	private ArrayList Areas;
-	private ArrayList Boxs;
+	public ArrayList Areas;
+	public ArrayList Boxs;
 	private Vector3 boxSize = new Vector3(1, 1, 1);
 	// 出生点
 	private Vector3 spawnPoint;

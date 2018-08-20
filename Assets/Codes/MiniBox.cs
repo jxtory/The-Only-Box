@@ -184,18 +184,18 @@ public class MiniBox : MonoBehaviour {
 
         // 有视线
         if(watchHim != null && watchTimer > 0){
-            // 视线是其他盒子
+            // 视线是其他还是盒子
             if(watchHim.gameObject.name.Substring(0, 3) == "Box"){
                 // 对视其他盒子的眼睛
                 hime = watchHim.transform.Find("Face/EyeBall").gameObject;
+                // 一定的几率 恢复心情
+                if(Random.Range(0, 100) < 20 && moodState == 2){
+                    this.moodState = oldMoodState;
+                } 
+
             } else {
                 hime = watchHim; 
             }
-
-            // 一定的几率 恢复心情
-            if(Random.Range(0, 100) < 20 && moodState == 2){
-                this.moodState = oldMoodState;
-            } 
 
             // 获取对方方向
             float dx = hime.transform.position.x;
@@ -259,20 +259,47 @@ public class MiniBox : MonoBehaviour {
         } else {
             // 如果视觉疲劳 清空视线
             watchHim = null;
-
             // 正视前方
             me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, Vector3.zero, 3f * Time.deltaTime);
-
             // 随机找到视线
             /*
                 不动         40-99
                 随机看某盒子 0-10
-                随机看某物体 10-20
-                随机看看     30-40
+                随机看某球体 10-20
+                随机看看     20-40
 
             */
-        }
+            if(watchHim == null){
+                // 随机找到视线
+                int watchRnd = Random.Range(0, 100);
+                // 看某盒子
+                if(watchRnd <= 10){
+                    int tRnd = Random.Range(0, GC.Boxs.Count);
+                    watchHim = GC.Boxs[tRnd] as GameObject;
+                    setWatchTimer();
+                }
 
+                // 看某球体
+                if(watchRnd > 10 && watchRnd <= 20){
+
+                }
+
+                // 随机看看
+                if(watchRnd > 20 && watchRnd <= 40){
+                    watchHim = new GameObject();
+                    watchHim.name = "watchPoint";
+                    watchHim.transform.position = new Vector3(Random.Range(-1000, 1000), Random.Range(-1000, 1000), 0);
+                    setWatchTimer();
+                    Destroy(watchHim, watchTimer);
+                }
+
+                // 不动
+                if(watchRnd > 40 && watchRnd <= 99){
+                    watchHim = null;
+                    watchTimer = 0;
+                }                
+            }
+        }
     }
 
     // - 人工智能 坠落 -
@@ -631,6 +658,12 @@ public class MiniBox : MonoBehaviour {
         BoxSelf.transform.localScale = scaleSize;
     }
 
+    // - 设置窥视时间 -
+    void setWatchTimer()
+    {
+        watchTimer = 5f + Random.Range(0, 10);
+    }
+
 	// Use this for initialization
 	void Start () {
 
@@ -655,7 +688,8 @@ public class MiniBox : MonoBehaviour {
         // 如果是方块
         if(f_him.gameObject.name.Substring(0, 3) == "Box"){
             watchHim = f_him.gameObject;
-            watchTimer = 5f + Random.Range(0, 10);
+            // 设置窥视时间
+            setWatchTimer();
             // 设置心情
             setMoodState(2);
             SetMood(5 * 20 - 10);
