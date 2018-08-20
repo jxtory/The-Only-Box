@@ -1,4 +1,4 @@
-﻿    using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -145,6 +145,9 @@ public class MiniBox : MonoBehaviour {
     // - 人工智能控制器 -
     public void AIController()
     {
+        // 目光控制
+        AICSightControl();
+
         // 坠落中
         AICToFalling();
 
@@ -157,12 +160,22 @@ public class MiniBox : MonoBehaviour {
 
     }
 
+    // - 目光控制 -
+    private void AICSightControl()
+    {
+        
+        if(him != null){
+
+        }
+
+    }
+
     // - 人工智能 坠落 -
     private void AICToFalling()
     {
         // 绑定刚体
-        Rigidbody2D him = BoxSelf.GetComponent<Rigidbody2D>();
-        this.magnitude = him.velocity.magnitude;
+        Rigidbody2D thim = BoxSelf.GetComponent<Rigidbody2D>();
+        this.magnitude = thim.velocity.magnitude;
         // 分析速度
         if(magnitude > 3 && !isJumping){
             // 焦虑
@@ -249,20 +262,20 @@ public class MiniBox : MonoBehaviour {
         // 是否停止运动
         bool issp = BoxSelf.GetComponent<Rigidbody2D>().IsSleeping();
         // 绑定刚体
-        Rigidbody2D him = BoxSelf.GetComponent<Rigidbody2D>();
+        Rigidbody2D t_him = BoxSelf.GetComponent<Rigidbody2D>();
 
         // 获取欧拉角-角度 还需再行研究
         float tf = 360 - (rn.z % 360) > 180 ? 360 - (360 - (rn.z % 360)) : 360 - (360 - (rn.z % 360)) - 360;
 
         // 站立运算
         if ((tf > 44 || tf < -44) && issp && !isJumping){
-            him.velocity = new Vector2(0, 7f);
+            t_him.velocity = new Vector2(0, 7f);
             isJumping = true;
         }
 
         // 跳起检测
         // if(Mathf.Abs(tf) < 45 || him.velocity.magnitude < 0.5f){
-        if(him.velocity.magnitude < 0.5f){
+        if(t_him.velocity.magnitude < 0.5f){
             isJumping = false;
         }
 
@@ -517,9 +530,9 @@ public class MiniBox : MonoBehaviour {
 	}
 
     // - 碰撞检测 -
-    void OnCollisionEnter2D(Collision2D him)
+    void OnCollisionEnter2D(Collision2D f_him)
     {
-        if(him.gameObject.name.Substring(0, 3) == "Box"){
+        if(f_him.gameObject.name.Substring(0, 3) == "Box"){
             Debug.Log("Yes");
 
         }
