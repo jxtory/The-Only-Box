@@ -48,8 +48,12 @@ public class MiniBox : MonoBehaviour {
     private int mood = 6 * 20;
     private float moodSelfHealing = 0;
     private int moodState = 0;
-    // - 视线 -
-    private GameObject him;
+    // - 观察视线 -
+    private GameObject watchHim;
+    // - 窥视时间 -
+    [Header("窥视时间")]
+    [SerializeField]
+    private float watchTimer;
 
     // - - - - - - - - - - 
 
@@ -163,9 +167,89 @@ public class MiniBox : MonoBehaviour {
     // - 目光控制 -
     private void AICSightControl()
     {
-        
-        if(him != null){
+        // 找到自己的眼球
+        GameObject me = BoxSelf.transform.Find("Face/EyeBall").gameObject;
+        GameObject hime;
+        // 获取原始位置
+        float x = me.transform.position.x;
+        float y = me.transform.position.y;
+        float mvx;
+        float mvy;
 
+        // 窥视时间在减少
+        if(watchTimer > 0){watchTimer -= Time.deltaTime;} 
+
+        // 有视线
+        if(watchHim != null && watchTimer > 0){
+            // 视线是其他盒子
+            if(watchHim.gameObject.name.Substring(0, 3) == "Box"){
+                // 对视其他盒子的眼睛
+                hime = watchHim.transform.Find("Face/EyeBall").gameObject;
+            } else {
+                hime = watchHim; 
+            }
+
+            // 获取对方方向
+            float dx = hime.transform.position.x;
+            float dy = hime.transform.position.y;
+
+            // 眼球幅度
+            if((me.transform.position - hime.transform.position).magnitude < 3){
+                mvx = 0.075f;
+                mvy = 0.075f;
+            } else {
+                mvx = 0.15f;
+                mvy = 0.15f;
+            }
+
+            Vector3 pos = me.transform.localPosition;
+
+            if(x < dx){
+                if(Vector2.Distance(pos, new Vector2(pos.x + mvx, pos.y)) > mvx * 0.1f){
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x + mvx, pos.y, 0), Time.deltaTime);
+                } else {
+                    me.transform.localPosition = new Vector3(pos.x + mvx, pos.y, 0);
+                }
+            }
+
+            if(x > dx){
+                if(Vector2.Distance(pos, new Vector2(pos.x + mvx, pos.y)) > mvx * 0.1f){
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x - mvx, pos.y, 0), Time.deltaTime);
+                } else {
+                    me.transform.localPosition = new Vector3(pos.x - mvx, pos.y, 0);
+                }
+            }
+
+            if(y < dy){
+                if(Vector2.Distance(pos, new Vector2(pos.x, pos.y + mvy)) > mvy * 0.1f){
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x, pos.y + mvy, 0), Time.deltaTime);
+                } else {
+                    me.transform.localPosition = new Vector3(pos.x, pos.y + mvy, 0);
+                }
+            }
+
+            if(y > dy){
+                if(Vector2.Distance(pos, new Vector2(pos.x, pos.y - mvy)) > mvy * 0.1f){
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, new Vector3(pos.x, pos.y - mvy, 0), Time.deltaTime);
+                } else {
+                    me.transform.localPosition = new Vector3(pos.x, pos.y - mvy, 0);
+                }
+            }
+
+            pos = me.transform.localPosition;
+
+
+            me.transform.localPosition = new Vector3(Mathf.Clamp(pos.x, -mvx, mvx), Mathf.Clamp(pos.y, -mvy, mvy), 0);
+
+        } else {
+            // 随机找到视线
+            /*
+                不动         40-99
+                随机看某盒子 0-10
+                随机看某物体 10-20
+                随机看看     30-40
+
+            */
         }
 
     }
@@ -532,9 +616,10 @@ public class MiniBox : MonoBehaviour {
     // - 碰撞检测 -
     void OnCollisionEnter2D(Collision2D f_him)
     {
+        // 如果是方块
         if(f_him.gameObject.name.Substring(0, 3) == "Box"){
-            Debug.Log("Yes");
-
+            watchHim = f_him.gameObject;
+            watchTimer = 5f + Random.Range(0, 10);
         }
     }
 
