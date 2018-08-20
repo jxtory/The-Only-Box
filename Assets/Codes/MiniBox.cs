@@ -45,7 +45,7 @@ public class MiniBox : MonoBehaviour {
     // - 心情 - 
     [Header("心情值")]
     [SerializeField]
-    private int mood = 6 * 20;
+    private int mood = 9 * 20;
     private float moodSelfHealing = 0;
     private int oldMoodState = 0;
     private int moodState = 0;
@@ -57,6 +57,10 @@ public class MiniBox : MonoBehaviour {
     [Header("窥视时间")]
     [SerializeField]
     private float watchTimer;
+    // - 拖动监测 -
+    private bool isTouchDown = false;
+    private Vector3 lastTouchPosition = Vector3.zero;
+    private Touch touchBox;
 
     // - - - - - - - - - - 
 
@@ -664,6 +668,20 @@ public class MiniBox : MonoBehaviour {
         watchTimer = 5f + Random.Range(0, 10);
     }
 
+    // - 拖动检测 -
+    void TouchMove()
+    {        
+        if(isTouchDown){
+            if(lastTouchPosition != Vector3.zero)
+            {
+                Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition) - lastTouchPosition;
+                BoxSelf.transform.position += offset;
+            }
+            lastTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+
+    }
+
 	// Use this for initialization
 	void Start () {
 
@@ -680,6 +698,9 @@ public class MiniBox : MonoBehaviour {
         // - 人工智能控制 -
         AIController();
 
+        // - 拖动检测 -
+        TouchMove();
+
 	}
 
     // - 碰撞检测 -
@@ -694,6 +715,19 @@ public class MiniBox : MonoBehaviour {
             setMoodState(2);
             SetMood(5 * 20 - 10);
         }
+    }
+
+    // Touch检测
+    void OnMouseDown()
+    {
+        isTouchDown = true;
+    }
+
+    // 松开检查
+    void OnMouseUp()
+    {
+        isTouchDown = false;
+        lastTouchPosition = Vector3.zero;
     }
 
     /*
