@@ -188,14 +188,14 @@ public class MiniBox : MonoBehaviour {
             if(watchHim.gameObject.name.Substring(0, 3) == "Box"){
                 // 对视其他盒子的眼睛
                 hime = watchHim.transform.Find("Face/EyeBall").gameObject;
-                // 一定的几率 恢复心情
-                if(Random.Range(0, 100) < 20 && moodState == 2){
-                    this.moodState = oldMoodState;
-                } 
-
             } else {
                 hime = watchHim; 
             }
+
+            // 一定的几率 恢复心情
+            if(Random.Range(0, 100) < 20 && moodState == 2){
+                this.moodState = oldMoodState;
+            } 
 
             // 获取对方方向
             float dx = hime.transform.position.x;
