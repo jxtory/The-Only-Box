@@ -17,6 +17,7 @@ public class MiniBall : MonoBehaviour {
 	// 颜色	默认为白色
 	[Header("球颜色")]
 	public Color color = Color.white;
+	public Color bodyColor = Color.red;
 	// 大小	
 	private Vector3 scaleSize = new Vector3(1.0f, 1.0f, 1.0f);
 	// 在岗
@@ -126,15 +127,27 @@ public class MiniBall : MonoBehaviour {
 		// 添加精灵渲染器
 		BallSelf.AddComponent<SpriteRenderer>();
 		// 贴图
-		GameObject tBall = (GameObject)Instantiate(Resources.Load("Scenes/JoyBall/JoyBallBorder"));
-		BallSelf.GetComponent<SpriteRenderer>().sprite = tBall.GetComponent<SpriteRenderer>().sprite;
-		Destroy(tBall);
+		BallSelf.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/JoyBall/JoyBall");
 		// 添加刚体和碰撞器
 		BallSelf.AddComponent<Rigidbody2D>();
 		BallSelf.AddComponent<CircleCollider2D>();
 		BallSelf.GetComponent<SpriteRenderer>().sortingOrder = 1;
 		// 添加主体颜色
 		BallSelf.GetComponent<SpriteRenderer>().color = color;
+
+		// 创建圆身
+		GameObject JoyBallBody = new GameObject();
+		JoyBallBody.name = "JoyBallBody";
+		JoyBallBody.transform.parent = BallSelf.transform;
+		JoyBallBody.AddComponent<SpriteRenderer>();
+		JoyBallBody.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/JoyBall/JoyBall");
+		// 自缩放
+		JoyBallBody.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
+		// 添加身体颜色
+		BallSelf.GetComponent<SpriteRenderer>().color = bodyColor;
+		// 显示优先级
+		JoyBallBody.GetComponent<SpriteRenderer>().sortingOrder = 2;
+
 
 		// 缩放物体
 		BallSelf.transform.localScale = scaleSize;
