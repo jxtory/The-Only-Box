@@ -37,6 +37,15 @@ public class MiniBall : MonoBehaviour {
 	    }
 	}
 
+    // 获取在岗值
+    public bool Working
+    {
+        get
+        {
+            return working;
+        }
+    }
+
 	// - - - - - - - - - -
 
 	// - 工作检测 -
@@ -117,7 +126,9 @@ public class MiniBall : MonoBehaviour {
 		// 添加精灵渲染器
 		BallSelf.AddComponent<SpriteRenderer>();
 		// 贴图
-		BallSelf.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/JoyBall/JoyBallBorder");
+		GameObject tBall = (GameObject)Instantiate(Resources.Load("Scenes/JoyBall/JoyBallBorder"));
+		BallSelf.GetComponent<SpriteRenderer>().sprite = tBall.GetComponent<SpriteRenderer>().sprite;
+		Destroy(tBall);
 		// 添加刚体和碰撞器
 		BallSelf.AddComponent<Rigidbody2D>();
 		BallSelf.AddComponent<CircleCollider2D>();

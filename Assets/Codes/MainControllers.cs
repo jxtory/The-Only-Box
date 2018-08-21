@@ -453,6 +453,15 @@ public class MainControllers : MonoBehaviour {
 			}
 
 		}
+
+		for(int i = 0; i < JoyBalls.Count; i++){
+			GameObject ball = JoyBalls[i] as GameObject;
+			if(!ball.GetComponent<MiniBall>().Working){
+				return true;
+			}
+
+		}
+
 		return false;
 	}
 
