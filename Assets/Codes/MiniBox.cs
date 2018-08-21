@@ -208,8 +208,6 @@ public class MiniBox : MonoBehaviour {
             } else {
                 hime = watchHim; 
             }
-
-
             // 获取对方方向
             float dx = hime.transform.position.x;
             float dy = hime.transform.position.y;
@@ -268,9 +266,19 @@ public class MiniBox : MonoBehaviour {
 
         } else {
             // 如果视觉疲劳 清空视线
-            watchHim = null;
+            if(watchTimer <= 0){
+                watchHim = null;
+            } else {
+                // 窥视时间在减少
+                watchTimer -= Time.deltaTime;
+            }
             // 正视前方
-            me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, Vector3.zero, 3f * Time.deltaTime);
+            if(watchHim == null && watchTimer > 0){
+                if(Vector2.Distance(me.transform.localPosition, Vector3.zero) > 0){
+                    me.transform.localPosition = Vector3.Lerp(me.transform.localPosition, Vector3.zero, Time.deltaTime);
+                }
+               
+            }
             // 随机找到视线
             /*
                 不动         40-99
@@ -279,14 +287,14 @@ public class MiniBox : MonoBehaviour {
                 随机看看     20-40
 
             */
-            if(watchHim == null){
+            if(watchHim == null && watchTimer <= 0){
                 // 随机找到视线
                 int watchRnd = Random.Range(0, 100);
                 // 看某盒子
                 if(watchRnd <= 10){
                     int tRnd = Random.Range(0, GC.Boxs.Count);
                     watchHim = GC.Boxs[tRnd] as GameObject;
-                    setWatchTimer();
+                    setWatchTimer(1);
                 }
 
                 // 看某球体
@@ -299,14 +307,14 @@ public class MiniBox : MonoBehaviour {
                     watchHim = new GameObject();
                     watchHim.name = "watchPoint";
                     watchHim.transform.position = new Vector3(Random.Range(-1000, 1000), Random.Range(-1000, 1000), 0);
-                    setWatchTimer();
+                    setWatchTimer(3);
                     Destroy(watchHim, watchTimer);
                 }
 
                 // 不动
                 if(watchRnd > 40 && watchRnd <= 99){
                     watchHim = null;
-                    watchTimer = 0;
+                    setWatchTimer(4);
                 }                
             }
         }
@@ -715,9 +723,26 @@ public class MiniBox : MonoBehaviour {
     }
 
     // - 设置窥视时间 -
-    void setWatchTimer()
+    void setWatchTimer(int f_level)
     {
-        watchTimer = 5f + Random.Range(0, 10);
+        // 窥视等级
+        // 1盒子  2球  3点 4不动
+        switch(f_level)
+        {
+
+            case 1:
+                watchTimer = 5f + Random.Range(0, 10);
+                break;
+            case 2:
+                watchTimer = 2f + Random.Range(0, 8);
+                break;
+            case 3:
+                watchTimer = 3f + Random.Range(0, 6);
+                break;
+            case 4:
+                watchTimer = 3;
+                break;
+        }
     }
 
     // - 拖动检测 -
@@ -773,7 +798,7 @@ public class MiniBox : MonoBehaviour {
         if(f_him.gameObject.name.Substring(0, 3) == "Box"){
             watchHim = f_him.gameObject;
             // 设置窥视时间
-            setWatchTimer();
+            setWatchTimer(1);
             // 设置心情
             if(moodState != 2){
                 setMoodState(2);                
