@@ -142,11 +142,11 @@ public class MiniBall : MonoBehaviour {
 		JoyBallBody.AddComponent<SpriteRenderer>();
 		JoyBallBody.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Scenes/JoyBall/JoyBall");
 		// 自缩放
-		JoyBallBody.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
+		JoyBallBody.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
 		// 添加身体颜色
-		BallSelf.GetComponent<SpriteRenderer>().color = bodyColor;
+		JoyBallBody.GetComponent<SpriteRenderer>().color = bodyColor;
 		// 显示优先级
-		JoyBallBody.GetComponent<SpriteRenderer>().sortingOrder = 2;
+		JoyBallBody.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
 
 		// 缩放物体
@@ -184,6 +184,9 @@ public class MiniBall : MonoBehaviour {
 	void Update () {
 		// 查岗		
 		checkWorking();
+
+		// - 拖动检测 -
+		TouchMove();
 	}
 
 	// Touch检测

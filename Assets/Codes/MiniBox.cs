@@ -299,7 +299,9 @@ public class MiniBox : MonoBehaviour {
 
                 // 看某球体
                 if(watchRnd > 10 && watchRnd <= 20){
-
+                    int tRnd = Random.Range(0, GC.JoyBalls.Count);
+                    watchHim = GC.JoyBalls[tRnd] as GameObject;
+                    setWatchTimer(2);
                 }
 
                 // 随机看看
