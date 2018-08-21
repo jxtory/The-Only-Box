@@ -202,11 +202,7 @@ public class MiniBox : MonoBehaviour {
             if(watchHim.gameObject.name.Substring(0, 3) == "Box"){
                 // 对视其他盒子的眼睛
                 hime = watchHim.transform.Find("Face/EyeBall").gameObject;
-                // 一定的几率 恢复心情
-                if(Random.Range(0, 100) < 20 && moodState == 2){
-                    this.moodState = oldMoodState;
-                } 
-                // 必然恢复心情
+                // 恢复心情
                 if(watchTimer <= 0 && moodState == 2){this.moodState = oldMoodState;}
 
             } else {
@@ -418,7 +414,7 @@ public class MiniBox : MonoBehaviour {
         // 获取欧拉角-角度 还需再行研究
         float tf = 360 - (rn.z % 360) > 180 ? 360 - (360 - (rn.z % 360)) : 360 - (360 - (rn.z % 360)) - 360;
 
-        // 站立运算
+        // 站立运算 45为 倾斜极限
         if ((tf > 44 || tf < -44) && issp && !isJumping){
             t_him.velocity = new Vector2(0, 7f);
             isJumping = true;
@@ -432,25 +428,43 @@ public class MiniBox : MonoBehaviour {
 
         // 跳起中调整位置
         if (isJumping) {
+            float rSpeed = 4.0f;
+            float reR = 15f;
             // if (tf > 44 && tf <= 180)
-            if (tf > 44)
+            if (tf > 44 && tf <= 180)
             {
-                Quaternion ros = Quaternion.Euler(0, 0, 25f);
+                Quaternion ros = Quaternion.Euler(0, 0, reR);
                 // 平滑旋转
-                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
-                if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 3)
-                {
-                    BoxSelf.transform.rotation = ros;
-                }
+                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, rSpeed * Time.deltaTime);
             }
 
             //if (tf >= -180 && tf < -44)
-            if (tf < -44)
+            if (tf >= -180 && tf < -44)
             {
-                Quaternion ros = Quaternion.Euler(0, 0, -25f);
+                Quaternion ros = Quaternion.Euler(0, 0, -reR);
                 // 平滑旋转
-                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
-                if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 3)
+                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, rSpeed * Time.deltaTime);
+            }
+
+            if (tf > 0 && tf <= 44)
+            {
+                Quaternion ros = Quaternion.Euler(0, 0, reR);
+                // 平滑旋转
+                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, rSpeed * Time.deltaTime);
+
+                if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 2)
+                {
+                    BoxSelf.transform.rotation = ros;
+                }
+
+            }
+
+            if (tf >= -44 && tf < 0)
+            {
+                Quaternion ros = Quaternion.Euler(0, 0, -reR);
+                // 平滑旋转
+                BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, rSpeed * Time.deltaTime);
+                if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 2)
                 {
                     BoxSelf.transform.rotation = ros;
                 }
@@ -648,7 +662,9 @@ public class MiniBox : MonoBehaviour {
         // 添加刚体和碰撞器
         BoxSelf.AddComponent<Rigidbody2D>();
         BoxSelf.AddComponent<BoxCollider2D>();
-        BoxSelf.GetComponent<SpriteRenderer>().sortingOrder = 1;        
+        BoxSelf.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        // 修正碰撞边缘
+        BoxSelf.GetComponent<BoxCollider2D>().size = new Vector2(2.75f, 2.85f);
         // 添加主体颜色
         BoxSelf.GetComponent<SpriteRenderer>().color = color;
 
@@ -764,15 +780,15 @@ public class MiniBox : MonoBehaviour {
             }
 
             // 根据对方坠落速度 决定心情
-            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude < 3f){
+            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude > 1f){
                 SetMood(5 * 20 - 10);
             }
 
-            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude < 5f){
+            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude > 7f){
                 SetMood(6 * 20 - 10);
             }
 
-            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude < 15f){
+            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude > 10f){
                 SetMood(7 * 20 - 10);
             }
 
