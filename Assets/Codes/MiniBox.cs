@@ -131,6 +131,15 @@ public class MiniBox : MonoBehaviour {
         }
     }
 
+    // 获取速度值
+    public float Magnitude
+    {
+        get
+        {
+            return magnitude;
+        }
+    }
+
     // 设置出生地
     public Vector3 MySpawnPoint
     {
@@ -183,23 +192,27 @@ public class MiniBox : MonoBehaviour {
         float mvx;
         float mvy;
 
-        // 窥视时间在减少
-        if(watchTimer > 0){watchTimer -= Time.deltaTime;} 
 
         // 有视线
         if(watchHim != null && watchTimer > 0){
+            // 窥视时间在减少
+            watchTimer -= Time.deltaTime; 
+
             // 视线是其他还是盒子
             if(watchHim.gameObject.name.Substring(0, 3) == "Box"){
                 // 对视其他盒子的眼睛
                 hime = watchHim.transform.Find("Face/EyeBall").gameObject;
+                // 一定的几率 恢复心情
+                if(Random.Range(0, 100) < 20 && moodState == 2){
+                    this.moodState = oldMoodState;
+                } 
+                // 必然恢复心情
+                if(watchTimer <= 0 && moodState == 2){this.moodState = oldMoodState;}
+
             } else {
                 hime = watchHim; 
             }
 
-            // 一定的几率 恢复心情
-            if(Random.Range(0, 100) < 20 && moodState == 2){
-                this.moodState = oldMoodState;
-            } 
 
             // 获取对方方向
             float dx = hime.transform.position.x;
@@ -256,9 +269,6 @@ public class MiniBox : MonoBehaviour {
 
             // 眼球转动限制
             me.transform.localPosition = new Vector3(Mathf.Clamp(pos.x, -mvx, mvx), Mathf.Clamp(pos.y, -mvy, mvy), 0);
-
-            // 恢复心情
-            if(watchTimer <= 0 && moodState == 2){this.moodState = oldMoodState;}
 
         } else {
             // 如果视觉疲劳 清空视线
@@ -426,6 +436,7 @@ public class MiniBox : MonoBehaviour {
             if (tf > 44)
             {
                 Quaternion ros = Quaternion.Euler(0, 0, 25f);
+                // 平滑旋转
                 BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
                 if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 3)
                 {
@@ -437,6 +448,7 @@ public class MiniBox : MonoBehaviour {
             if (tf < -44)
             {
                 Quaternion ros = Quaternion.Euler(0, 0, -25f);
+                // 平滑旋转
                 BoxSelf.transform.rotation = Quaternion.Slerp(BoxSelf.transform.rotation, ros, 5f * Time.deltaTime);
                 if (Quaternion.Angle(ros, BoxSelf.transform.rotation) < 3)
                 {
@@ -458,24 +470,45 @@ public class MiniBox : MonoBehaviour {
         // 超出上边界
         if (BoxSelf.transform.position.y > GC.BorderTop.transform.position.y){
             working = false;
+            if(GC.EntranceDir.name != "Top"){
+                // 重生
+                BoxSelf.transform.position = mySpawnPoint;
+                // 刚体动态
+                BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            }
         }
 
         // 超出下边界
         if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y < GC.BorderBottom.transform.position.y){
             working = false;
-            BoxSelf.transform.position = mySpawnPoint;
+            if(GC.EntranceDir.name != "Bottom"){
+                // 重生
+                BoxSelf.transform.position = mySpawnPoint;
+                // 刚体动态
+                BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            }
         }
 
         // 超出左边界
         if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y > GC.BorderBottom.transform.position.y && BoxSelf.transform.position.x < GC.BorderLeft.transform.position.x){
             working = false;
-            BoxSelf.transform.position = mySpawnPoint;
+            if(GC.EntranceDir.name != "Left"){
+                // 重生
+                BoxSelf.transform.position = mySpawnPoint;
+                // 刚体动态
+                BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            }
         }
 
         // 超出右边界
         if (BoxSelf.transform.position.y < GC.BorderTop.transform.position.y && BoxSelf.transform.position.y > GC.BorderBottom.transform.position.y && BoxSelf.transform.position.x > GC.BorderRight.transform.position.x){
             working = false;
-            BoxSelf.transform.position = mySpawnPoint;
+            if(GC.EntranceDir.name != "Right"){
+                // 重生
+                BoxSelf.transform.position = mySpawnPoint;
+                // 刚体动态
+                BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            }
         }
 
     }
@@ -550,9 +583,12 @@ public class MiniBox : MonoBehaviour {
         int tMouth = -1;
         // int kind;
         // string partName = kind < 2 ? partNames[0] : partNames[Random.Range(0, kind)];
+        // 部位名称
         string partName = partNames;
 
+        // 根据心情值决定取值范围
         if(mood >= 20 * (degree - 1) && mood < 20 * degree){
+            // 返回嘴部部位
             tMouth = GC.GetMouthNumber(partName);
             return tMouth;
         }
@@ -672,12 +708,19 @@ public class MiniBox : MonoBehaviour {
     void TouchMove()
     {        
         if(isTouchDown){
+            // 刚体静态
+            BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+
+            // 拖动移动
             if(lastTouchPosition != Vector3.zero)
             {
                 Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition) - lastTouchPosition;
                 BoxSelf.transform.position += offset;
             }
             lastTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        } else {
+            // 刚体动态
+            BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         }
 
     }
@@ -685,18 +728,22 @@ public class MiniBox : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // 固定更新    
+    void FixedUpdate(){
+        // - 人工智能控制 -
+        AIController();
+        
+    }
+
+    // Update is called once per frame
+    void Update () {
         // - 控制心情 -
         if(BPsychomotor){Psychomotor();}
 
         // - 查岗 -
         checkWorking();
-
-        // - 人工智能控制 -
-        AIController();
 
         // - 拖动检测 -
         TouchMove();
@@ -712,20 +759,37 @@ public class MiniBox : MonoBehaviour {
             // 设置窥视时间
             setWatchTimer();
             // 设置心情
-            setMoodState(2);
-            SetMood(5 * 20 - 10);
+            if(moodState != 2){
+                setMoodState(2);                
+            }
+
+            // 根据对方坠落速度 决定心情
+            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude < 3f){
+                SetMood(5 * 20 - 10);
+            }
+
+            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude < 5f){
+                SetMood(6 * 20 - 10);
+            }
+
+            if(f_him.gameObject.GetComponent<MiniBox>().Magnitude < 15f){
+                SetMood(7 * 20 - 10);
+            }
+
         }
     }
 
     // Touch检测
     void OnMouseDown()
     {
+        // 按下
         isTouchDown = true;
     }
 
     // 松开检查
     void OnMouseUp()
     {
+        // 拿起
         isTouchDown = false;
         lastTouchPosition = Vector3.zero;
     }

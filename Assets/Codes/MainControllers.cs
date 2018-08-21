@@ -113,6 +113,15 @@ public class MainControllers : MonoBehaviour {
 		}
 	}
 
+	// 获取入口
+	public GameObject EntranceDir
+	{
+		get
+		{
+			return entranceDir;
+		}
+	}
+
 	// - - - - - - - - - - -
 
 	// - 辅助相机控制 -
@@ -193,6 +202,7 @@ public class MainControllers : MonoBehaviour {
 	// - 边界控制 -
 	void BordersControl()
 	{
+		// 相机位置
         float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
         float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
 
@@ -261,6 +271,7 @@ public class MainControllers : MonoBehaviour {
 				1为产区    2为区域中心
 		*/
 		if(type == 1){
+			// 清空区域
 			ClearThem(AreaSpace);
 			Areas = new ArrayList();
 			// 随机抽取区域
@@ -417,6 +428,7 @@ public class MainControllers : MonoBehaviour {
 		Vector3 pos_s = getEntranceTargetPos(entranceDir);
 		// 开启点
 		Vector3 pos_o = getEntranceTargetPos(entranceDir, 1);
+		// 入口控制
 		if(entranceControl() == true){
             SetBorderControlPart(entranceDir, false);
             entranceDir.transform.position = Vector3.Lerp(entranceDir.transform.position, pos_o, 0.025f);
@@ -476,6 +488,7 @@ public class MainControllers : MonoBehaviour {
 	// - 获取门禁目标位置 -
 	private Vector3 getEntranceTargetPos(GameObject him, int kind = 0)
 	{
+		// 相机位置
 		float cmx = FollowCamera ? Camera.main.transform.position.x : 0; 
 		float cmy = FollowCamera ? Camera.main.transform.position.y : 0;
 
@@ -560,12 +573,13 @@ public class MainControllers : MonoBehaviour {
 	// - 出生点镜头特写 -
 	void spawnCloseUp()
 	{
+		// 判断是否存在出生点
 		if(spawnPoint != new Vector3()){
+			// 带欢乐球的出生点
 			if(joyBallSpawnPoint != new Vector3()){
 				createAuxCamera(GetMainCameraPos(), new Vector3[]{GetMainCameraPos() ,spawnPoint, joyBallSpawnPoint, GetMainCameraPos(), GetMainCameraPos()}, 12.5f, false);
 			} else {
 				createAuxCamera(GetMainCameraPos(), new Vector3[]{GetMainCameraPos(), spawnPoint, GetMainCameraPos()}, 6f);
-
 			}
 
 		}
