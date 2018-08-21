@@ -16,7 +16,8 @@ public class MiniBox : MonoBehaviour {
     public string MyName;
     private Vector3 mySpawnPoint;
     // 颜色	默认为白色
-    private Color color = Color.white;
+    [Header("盒子颜色")]
+    public Color color = Color.white;
     // 大小	
     private Vector3 scaleSize = new Vector3(1.0f, 1.0f, 1.0f);
     // 在岗
@@ -60,7 +61,6 @@ public class MiniBox : MonoBehaviour {
     // - 拖动监测 -
     private bool isTouchDown = false;
     private Vector3 lastTouchPosition = Vector3.zero;
-    private Touch touchBox;
 
     // - - - - - - - - - - 
 

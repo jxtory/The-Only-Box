@@ -54,10 +54,12 @@ public class MainControllers : MonoBehaviour {
 	private string[] dAreaCenter_DeliVery;
 
 	// - 游戏元素及计算数据 -
-	// 用于存储盒子
+	// 用于存储数据
 	public ArrayList Areas;
 	public ArrayList Boxs;
+	public ArrayList JoyBalls;
 	private Vector3 boxSize = new Vector3(1, 1, 1);
+	private Vector3 ballSize = new Vector3(1, 1, 1);
 	// 出生点
 	private Vector3 spawnPoint;
 	private Vector3 joyBallSpawnPoint;
@@ -408,6 +410,39 @@ public class MainControllers : MonoBehaviour {
 
 	}
 
+	// - 创建欢乐球 -
+	public void CreateJoyBall()
+	{
+    	// 创建一个新的球(躯体)
+		GameObject newBall = new GameObject();
+    	// 给球添加MiniBox控制器(灵魂)
+		newBall.AddComponent<MiniBall>();
+		// 控制MiniBall(附身)
+		MiniBall ball = newBall.GetComponent<MiniBall>();
+		// 绑定球与MiniBall(捆绑)
+		ball.SetBallSelf(newBall);
+		// 给球指定从属的控制器(寄宿)
+		ball.GC = this.GetComponent<MainControllers>();
+		// 给球命名(名字)
+		ball.MyName = "JoyBall";
+		// 设置缩放比例(体形)
+		ball.SetScaleSize(ballSize);
+    	// 生成球(出生)
+    	ball.SetGameObject();
+	    // 从出生点出生
+	    if(joyBallSpawnPoint == new Vector3(0, 0, 0)){
+	    	ball.MySpawnPoint = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
+	    	newBall.transform.position = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
+	    } else {
+		    ball.MySpawnPoint = joyBallSpawnPoint;
+		    newBall.transform.position = joyBallSpawnPoint;
+	    }
+
+	    // 将球加入到大集合
+	    JoyBalls.Add(newBall);		
+
+	}
+
 	// - 入口控制 -
 	private bool entranceControl()
 	{
@@ -747,6 +782,7 @@ public class MainControllers : MonoBehaviour {
         // - 初始化盒子 -
         Boxs = new ArrayList();
         Areas = new ArrayList();
+        JoyBalls = new ArrayList();
 	}
 
 	// - 初始化 -
