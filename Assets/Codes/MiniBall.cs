@@ -29,11 +29,24 @@ public class MiniBall : MonoBehaviour {
 	// 失踪
 	private bool missing;
 	private float toMissTime;
+    // 坠落速度
+    [Header("坠落速度")]
+    [SerializeField]
+    private float magnitude;
 	// - 拖动监测 -
 	private bool isTouchDown = false;
 	private Vector3 lastTouchPosition = Vector3.zero;
 
 	// - - - - - - - - - -
+    // 获取速度值
+    public float Magnitude
+    {
+        get
+        {
+            return magnitude;
+        }
+    }
+
 	// 设置出生地
 	public Vector3 MySpawnPoint
 	{
@@ -110,7 +123,7 @@ public class MiniBall : MonoBehaviour {
 	    // - 检测静态化 -
 	    // 获取动态
 	    this.sleepState = BallSelf.GetComponent<Rigidbody2D>().IsSleeping();
-	    float magnitude = BallSelf.GetComponent<Rigidbody2D>().velocity.magnitude;
+	    this.magnitude = BallSelf.GetComponent<Rigidbody2D>().velocity.magnitude;
 	    if(sleepState || (!sleepState && magnitude < 0.5f))
 	    {
 	    	// 在岗检测

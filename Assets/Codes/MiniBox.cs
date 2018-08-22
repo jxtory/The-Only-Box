@@ -844,6 +844,7 @@ public class MiniBox : MonoBehaviour {
     // - 碰撞检测 -
     void OnCollisionEnter2D(Collision2D f_him)
     {
+        // 生气|难过|委屈|焦虑|惊讶|惊奇|大惊|沉默|卖萌|微笑|温柔|开心
         // 如果是方块
         if(f_him.gameObject.name.Substring(0, 3) == "Box"){
             watchHim = f_him.gameObject;
@@ -856,14 +857,39 @@ public class MiniBox : MonoBehaviour {
 
             // 根据对方坠落速度 决定心情
             if(f_him.gameObject.GetComponent<MiniBox>().Magnitude > 1f){
-                SetMood(5 * 20 - 10);
+                if(Random.Range(0, 100) < 10){SetMood(7 * 20 - 10);} else {SetMood(5 * 20 - 10);}
             }
 
             if(f_him.gameObject.GetComponent<MiniBox>().Magnitude > 7f){
-                SetMood(6 * 20 - 10);
+                if(Random.Range(0, 100) < 10){SetMood(7 * 20 - 10);} else {SetMood(6 * 20 - 10);}
             }
 
             if(f_him.gameObject.GetComponent<MiniBox>().Magnitude > 10f){
+                SetMood(7 * 20 - 10);
+            }
+
+        }
+
+        // 如果是球
+        if(f_him.gameObject.name.Substring(0, 3) == "Joy"){
+            watchHim = f_him.gameObject;
+            // 设置窥视时间
+            setWatchTimer(2);
+            // 设置心情
+            if(moodState != 2){
+                setMoodState(2);                
+            }
+
+            // 根据对方坠落速度 决定心情
+            if(f_him.gameObject.GetComponent<MiniBall>().Magnitude > 1f){
+                if(Random.Range(0, 100) < 10){SetMood(7 * 20 - 10);} else {SetMood(5 * 20 - 10);}
+            }
+
+            if(f_him.gameObject.GetComponent<MiniBall>().Magnitude > 7f){
+                if(Random.Range(0, 100) < 10){SetMood(7 * 20 - 10);} else {SetMood(6 * 20 - 10);}
+            }
+
+            if(f_him.gameObject.GetComponent<MiniBall>().Magnitude > 10f){
                 SetMood(7 * 20 - 10);
             }
 
