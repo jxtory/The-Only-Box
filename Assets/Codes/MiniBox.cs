@@ -24,6 +24,11 @@ public class MiniBox : MonoBehaviour {
     [Header("是否工作")]
     [SerializeField]
     private bool working;
+    // 安静状态
+    private bool sleepState;
+    // 失踪
+    private bool missing;
+    private float toMissTime;
     // 是否跳跃
     private bool isJumping;
     // 坠落速度
@@ -292,16 +297,22 @@ public class MiniBox : MonoBehaviour {
                 int watchRnd = Random.Range(0, 100);
                 // 看某盒子
                 if(watchRnd <= 10){
-                    int tRnd = Random.Range(0, GC.Boxs.Count);
-                    watchHim = GC.Boxs[tRnd] as GameObject;
-                    setWatchTimer(1);
+                    // 如有盒子
+                    if(GC.Boxs.Count > 0){
+                        int tRnd = Random.Range(0, GC.Boxs.Count);
+                        watchHim = GC.Boxs[tRnd] as GameObject;
+                        setWatchTimer(1);
+                    }
                 }
 
                 // 看某球体
                 if(watchRnd > 10 && watchRnd <= 20){
-                    int tRnd = Random.Range(0, GC.JoyBalls.Count);
-                    watchHim = GC.JoyBalls[tRnd] as GameObject;
-                    setWatchTimer(2);
+                    // 如果有球
+                    if(GC.JoyBalls.Count > 0){
+                        int tRnd = Random.Range(0, GC.JoyBalls.Count);
+                        watchHim = GC.JoyBalls[tRnd] as GameObject;
+                        setWatchTimer(2);
+                    }
                 }
 
                 // 随机看看
@@ -533,6 +544,43 @@ public class MiniBox : MonoBehaviour {
                 // 刚体动态
                 BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             }
+        }
+
+        // - 检测静态化 -
+        // 获取动态
+        this.sleepState = BoxSelf.GetComponent<Rigidbody2D>().IsSleeping();
+        if(sleepState || (!sleepState && magnitude < 0.5f))
+        {
+            // 在岗检测
+            if(!working)
+            {
+                // 失踪判定
+                missing = true;
+            } else {
+                missing = false;
+            }
+
+        } else {
+            // 捕获动作认为其没有失踪
+            missing = false;
+            toMissTime = 0;
+        }
+
+        // 失踪检测
+        if(missing)
+        {
+            // 记录失踪时间
+            toMissTime += Time.deltaTime;
+            if(toMissTime > 3)
+            {
+                // 重生
+                BoxSelf.transform.position = mySpawnPoint;
+                // 刚体动态
+                BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            }
+        } else {
+            // 失踪时间归零
+            toMissTime = 0;
         }
 
     }

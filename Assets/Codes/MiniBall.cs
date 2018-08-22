@@ -24,6 +24,11 @@ public class MiniBall : MonoBehaviour {
 	[Header("是否工作")]
 	[SerializeField]
 	private bool working;
+	// 安静状态
+	private bool sleepState;
+	// 失踪
+	private bool missing;
+	private float toMissTime;
 	// - 拖动监测 -
 	private bool isTouchDown = false;
 	private Vector3 lastTouchPosition = Vector3.zero;
@@ -102,6 +107,44 @@ public class MiniBall : MonoBehaviour {
 	        }
 	    }
 
+	    // - 检测静态化 -
+	    // 获取动态
+	    this.sleepState = BallSelf.GetComponent<Rigidbody2D>().IsSleeping();
+	    float magnitude = BallSelf.GetComponent<Rigidbody2D>().velocity.magnitude;
+	    if(sleepState || (!sleepState && magnitude < 0.5f))
+	    {
+	    	// 在岗检测
+	    	if(!working)
+	    	{
+	    		// 失踪判定
+	    		missing = true;
+	    	} else {
+	    		missing = false;
+	    	}
+
+	    } else {
+	    	// 捕获动作认为其没有失踪
+	    	missing = false;
+	    	toMissTime = 0;
+	    }
+
+	    // 失踪检测
+	    if(missing)
+	    {
+	    	// 记录失踪时间
+		    toMissTime += Time.deltaTime;
+		    if(toMissTime > 3)
+		    {
+		    	// 重生
+		    	BallSelf.transform.position = mySpawnPoint;
+		    	// 刚体动态
+		    	BallSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+		    }
+	    } else {
+	    	// 失踪时间归零
+	    	toMissTime = 0;
+	    }
+
 	}
 
 	// - 设置球 -
@@ -144,6 +187,7 @@ public class MiniBall : MonoBehaviour {
 		// 自缩放
 		JoyBallBody.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
 		// 添加身体颜色
+		bodyColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
 		JoyBallBody.GetComponent<SpriteRenderer>().color = bodyColor;
 		// 显示优先级
 		JoyBallBody.GetComponent<SpriteRenderer>().sortingOrder = 1;
