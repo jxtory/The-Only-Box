@@ -801,6 +801,7 @@ public class MiniBox : MonoBehaviour {
         if(isTouchDown){
             // 刚体静态
             BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+            BoxSelf.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 
             // 拖动移动
             if(lastTouchPosition != Vector3.zero)

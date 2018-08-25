@@ -217,6 +217,7 @@ public class MiniBall : MonoBehaviour {
 	    if(isTouchDown){
 	        // 刚体静态
 	        BallSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+	        BallSelf.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 
 	        // 拖动移动
 	        if(lastTouchPosition != Vector3.zero)
