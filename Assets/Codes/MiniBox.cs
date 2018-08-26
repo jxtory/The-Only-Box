@@ -53,7 +53,11 @@ public class MiniBox : MonoBehaviour {
     [SerializeField]
     private int mood = 9 * 20;
     private float moodSelfHealing = 0;
+    [Header("心理状态-旧状态")]
+    [SerializeField]
     private int oldMoodState = 0;
+    [Header("心理状态-当前")]
+    [SerializeField]
     private int moodState = 0;
     // - 观察视线 -
     [Header("观察对象")]
@@ -376,7 +380,7 @@ public class MiniBox : MonoBehaviour {
                     // 自愈
                     if(moodSelfHealing > 5){
                         SetMood(mood + 1);
-                        if(mood >= 5 * 20){SetMood(7 * 20);}
+                        if(mood >= 4 * 20 - 1){SetMood(7 * 20);}
                         moodSelfHealing = 0;
                     }
                 } 
@@ -389,7 +393,7 @@ public class MiniBox : MonoBehaviour {
                     // 自愈
                     if(moodSelfHealing > 5){
                         SetMood(mood + 1);
-                        if(mood >= 5 * 20){SetMood(7 * 20);}
+                        if(mood >= 4 * 20 - 1){SetMood(7 * 20);}
                         moodSelfHealing = 0;
                     }
                 }
@@ -876,22 +880,18 @@ public class MiniBox : MonoBehaviour {
             watchHim = f_him.gameObject;
             // 设置窥视时间
             setWatchTimer(2);
-            // 设置心情
-            if(moodState != 2){
-                setMoodState(2);                
-            }
 
             // 根据对方坠落速度 决定心情
             if(f_him.gameObject.GetComponent<MiniBall>().Magnitude > 1f){
-                if(Random.Range(0, 100) < 10){SetMood(7 * 20 - 10);} else {SetMood(5 * 20 - 10);}
+                if(Random.Range(0, 100) < 10){SetMood(2 * 20 - 10);} else {SetMood(4 * 20 - 10);}
             }
 
             if(f_him.gameObject.GetComponent<MiniBall>().Magnitude > 7f){
-                if(Random.Range(0, 100) < 10){SetMood(7 * 20 - 10);} else {SetMood(6 * 20 - 10);}
+                if(Random.Range(0, 100) < 10){SetMood(2 * 20 - 10);} else {SetMood(3 * 20 - 10);}
             }
 
             if(f_him.gameObject.GetComponent<MiniBall>().Magnitude > 10f){
-                SetMood(7 * 20 - 10);
+                SetMood(2 * 20 - 10);
             }
 
         }
