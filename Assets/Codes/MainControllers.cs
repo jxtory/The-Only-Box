@@ -344,7 +344,8 @@ public class MainControllers : MonoBehaviour {
 
 		// 调整覆盖模式
 		if(!coverMode){
-			auxCamera.GetComponent<Camera>().rect = new Rect(0.7f, 0.7f, 1f, 1f);
+			//auxCamera.GetComponent<Camera>().rect = new Rect(0.7f, 0.7f, 1f, 1f);
+			auxCamera.GetComponent<Camera>().rect = new Rect(0.58f, 0.34f, 0.38f, 0.37f);
 		}
 
 		// 设置任务轨迹
