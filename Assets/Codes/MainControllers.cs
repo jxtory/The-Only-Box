@@ -77,6 +77,13 @@ public class MainControllers : MonoBehaviour {
 	private int auxCameraShowTime = 5;
     private Vector3 auxCameraVelocity = Vector3.zero;
 
+    // 选中对象
+    [Header("选中对象")]
+    [SerializeField]
+    private GameObject selectHim;
+    [Header("选中计时")]
+    private float selectHimTimer;
+
 	// - - - - - - - - - - -
 	// - 属性控制 -
 	// 获取上边框
@@ -444,6 +451,42 @@ public class MainControllers : MonoBehaviour {
 
 	}
 
+	// - 检测选择物体 -
+	void checkSelectObject()
+	{
+		// 选择物体时间检测
+		if(selectHimTimer > 0)
+		{
+			// 时间减少
+			selectHimTimer -= Time.deltaTime;
+		} else {
+			// 清空他们
+			selectHimTimer = 0;
+			selectHim = null;
+		}
+		
+		// 物体抛出
+		if(selectHim != null && selectHimTimer > 0)
+		{
+			// 鼠标事件
+			if(Input.GetMouseButtonDown(0))
+			{
+				// 找点
+				Vector3 mosPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 dc = new Vector2((mosPos.x - selectHim.transform.position.x) * 2, (mosPos.y - selectHim.transform.position.y) * 2);
+                // 点击范围
+                if (Vector2.Distance(new Vector2(mosPos.x, mosPos.y), new Vector2(selectHim.transform.position.x, selectHim.transform.position.y)) > 1)
+                {
+                    selectHim.GetComponent<Rigidbody2D>().velocity = dc;
+                    // 清空
+                    selectHimTimer = 0;
+                    selectHim = null;
+                }
+            }
+
+		}
+	}
+
 	// - 入口控制 -
 	private bool entranceControl()
 	{
@@ -613,6 +656,15 @@ public class MainControllers : MonoBehaviour {
 		}
 
 		return b;
+	}
+
+	// 设置选中物体
+	public void SetSelectObject(GameObject him, float timer = 3.0f)
+	{
+		// 选中对象
+		selectHim = him;
+		// 释放时间
+		selectHimTimer = timer;
 	}
 
 	// - 出生点镜头特写 -
@@ -821,6 +873,9 @@ public class MainControllers : MonoBehaviour {
 
 		// 辅助相机控制
 		auxCameraControl();
+
+		// 检测选择物体
+		checkSelectObject();
 
 	}
 

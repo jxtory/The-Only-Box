@@ -252,6 +252,7 @@ public class MiniBall : MonoBehaviour {
 	{
 	    // 按下
 	    isTouchDown = true;
+		GC.SetSelectObject(BallSelf);
 	}
 
 	// 松开检查

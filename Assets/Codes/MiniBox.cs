@@ -902,6 +902,7 @@ public class MiniBox : MonoBehaviour {
     {
         // 按下
         isTouchDown = true;
+        GC.SetSelectObject(BoxSelf);
     }
 
     // 松开检查
