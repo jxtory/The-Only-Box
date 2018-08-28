@@ -506,6 +506,9 @@ public class MiniBox : MonoBehaviour {
             working = true;
         }
 
+        // 检测出生点
+        GC.GetSpawnPoint(BoxSelf, 0);
+
         // 超出上边界
         if (BoxSelf.transform.position.y > GC.BorderTop.transform.position.y){
             working = false;

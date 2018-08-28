@@ -61,8 +61,8 @@ public class MainControllers : MonoBehaviour {
 	private Vector3 boxSize = new Vector3(1, 1, 1);
 	private Vector3 ballSize = new Vector3(1, 1, 1);
 	// 出生点
-	private Vector3 spawnPoint;
-	private Vector3 joyBallSpawnPoint;
+	private GameObject spawnPoint;
+	private GameObject joyBallSpawnPoint;
 	// 入口方向
 	private GameObject entranceDir;
 
@@ -292,9 +292,10 @@ public class MainControllers : MonoBehaviour {
 			area.transform.parent = AreaSpace.transform;
 			Areas.Add(area);
 			// - 初始化出生点 -
-			spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+			// MemroyspawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint").transform.position : new Vector3();
+			spawnPoint = FindIt("BoxSpawnPoint") != null ? FindIt("BoxSpawnPoint") : null;
 			// - 初始化欢乐球出生点 -
-			joyBallSpawnPoint = FindIt("JoyBallSpawnPoint") != null ? FindIt("JoyBallSpawnPoint").transform.position : new Vector3();
+			joyBallSpawnPoint = FindIt("JoyBallSpawnPoint") != null ? FindIt("JoyBallSpawnPoint") : null;
 			// - 初始化入口位置 -
 			entranceDir = FindIt("Borders/" + area.GetComponent<AreaCenter>().EntranceDir);
 		}
@@ -398,12 +399,12 @@ public class MainControllers : MonoBehaviour {
     	// 生成盒子(出生)
     	box.SetGameObject();
 	    // 从出生点出生
-	    if(spawnPoint == new Vector3(0, 0, 0)){
+	    if(spawnPoint == null){
 	    	box.MySpawnPoint = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
 	    	newBox.transform.position = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
 	    } else {
-		    box.MySpawnPoint = spawnPoint;
-		    newBox.transform.position = spawnPoint;
+		    box.MySpawnPoint = spawnPoint.transform.position;
+		    newBox.transform.position = spawnPoint.transform.position;
 	    }
 
 	    // 将盒子加入到大集合
@@ -438,12 +439,12 @@ public class MainControllers : MonoBehaviour {
     	// 生成球(出生)
     	ball.SetGameObject();
 	    // 从出生点出生
-	    if(joyBallSpawnPoint == new Vector3(0, 0, 0)){
+	    if(joyBallSpawnPoint == null){
 	    	ball.MySpawnPoint = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
 	    	newBall.transform.position = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
 	    } else {
-		    ball.MySpawnPoint = joyBallSpawnPoint;
-		    newBall.transform.position = joyBallSpawnPoint;
+		    ball.MySpawnPoint = joyBallSpawnPoint.transform.position;
+		    newBall.transform.position = joyBallSpawnPoint.transform.position;
 	    }
 
 	    // 将球加入到大集合
@@ -622,6 +623,31 @@ public class MainControllers : MonoBehaviour {
 
 	}
 
+	// - 获取出生点 -
+	public void GetSpawnPoint(GameObject him, int f_type)
+	{
+		// type 0 Box 1 Ball
+		switch(f_type)
+		{
+			case 0:
+			    if(spawnPoint == null){
+			    	him.GetComponent<MiniBox>().MySpawnPoint = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
+			    } else {
+				    him.GetComponent<MiniBox>().MySpawnPoint = spawnPoint.transform.position;
+			    }
+
+				break;
+			case 1:
+			    if(joyBallSpawnPoint == null){
+			    	him.GetComponent<MiniBall>().MySpawnPoint = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0);
+			    } else {
+				    him.GetComponent<MiniBall>().MySpawnPoint = joyBallSpawnPoint.transform.position;
+			    }
+
+				break;
+		}
+	}
+
 	// - 找寻嘴的地址 -
 	public int GetMouthNumber(string him)
 	{
@@ -671,12 +697,12 @@ public class MainControllers : MonoBehaviour {
 	void spawnCloseUp()
 	{
 		// 判断是否存在出生点
-		if(spawnPoint != new Vector3()){
+		if(spawnPoint != null){
 			// 带欢乐球的出生点
-			if(joyBallSpawnPoint != new Vector3()){
-				createAuxCamera(GetMainCameraPos(), new Vector3[]{GetMainCameraPos() ,spawnPoint, joyBallSpawnPoint, GetMainCameraPos(), GetMainCameraPos()}, 12.5f, false);
+			if(joyBallSpawnPoint != null){
+				createAuxCamera(GetMainCameraPos(), new Vector3[]{GetMainCameraPos() ,spawnPoint.transform.position, joyBallSpawnPoint.transform.position, GetMainCameraPos(), GetMainCameraPos()}, 12.5f, false);
 			} else {
-				createAuxCamera(GetMainCameraPos(), new Vector3[]{GetMainCameraPos(), spawnPoint, GetMainCameraPos()}, 6f);
+				createAuxCamera(GetMainCameraPos(), new Vector3[]{GetMainCameraPos(), spawnPoint.transform.position, GetMainCameraPos()}, 6f);
 			}
 
 		}

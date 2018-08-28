@@ -76,6 +76,9 @@ public class MiniBall : MonoBehaviour {
 	        working = true;
 	    }
 
+	    // 检测出生点
+	    GC.GetSpawnPoint(BallSelf, 1);
+
 	    // 超出上边界
 	    if (BallSelf.transform.position.y > GC.BorderTop.transform.position.y){
 	        working = false;
