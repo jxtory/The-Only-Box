@@ -806,6 +806,9 @@ public class MiniBox : MonoBehaviour {
     void TouchMove()
     {        
         if(isTouchDown){
+            // 设置选中对象和时间
+            GC.SetSelectObject(BoxSelf);
+
             // 刚体静态
             BoxSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
             BoxSelf.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
@@ -905,7 +908,7 @@ public class MiniBox : MonoBehaviour {
     {
         // 按下
         isTouchDown = true;
-        GC.SetSelectObject(BoxSelf);
+
     }
 
     // 松开检查

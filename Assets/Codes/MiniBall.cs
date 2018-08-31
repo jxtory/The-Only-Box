@@ -218,6 +218,9 @@ public class MiniBall : MonoBehaviour {
 	void TouchMove()
 	{        
 	    if(isTouchDown){
+	    	// 设置选中对象和时间
+	    	GC.SetSelectObject(BallSelf);
+
 	        // 刚体静态
 	        BallSelf.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
 	        BallSelf.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
@@ -255,7 +258,7 @@ public class MiniBall : MonoBehaviour {
 	{
 	    // 按下
 	    isTouchDown = true;
-		GC.SetSelectObject(BallSelf);
+
 	}
 
 	// 松开检查
